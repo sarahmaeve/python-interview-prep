@@ -11,6 +11,10 @@ This is **not** an algorithm drill or LeetCode substitute. The exercises here mi
 - Articulating your thought process and trade-offs
 - Writing clear, maintainable code
 
+## Short on Time?
+
+See **[STUDY_GUIDE.md](STUDY_GUIDE.md)** for prioritized 2-hour, 4-hour, and full-day prep tracks.
+
 ## Prerequisites
 
 - **Python 3.8+** (standard library only — no pip installs required)
@@ -104,3 +108,10 @@ After attempting an exercise, check `solutions/` for a walkthrough of the diagno
 | # | Exercise | Topic Areas | Goal |
 |---|----------|-------------|------|
 | 17 | Temperature Monitor | `@property`, composition | Fix 4 bugs with properties and composition |
+
+### Write Tests from Scratch
+
+| # | Exercise | Topic Areas | Goal |
+|---|----------|-------------|------|
+| 18 | String Calculator | Writing tests, edge cases | Write a test suite for working code |
+| 19 | Order Service | Writing tests with mocks | Write tests for code with external dependencies |

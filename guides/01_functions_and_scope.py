@@ -47,6 +47,18 @@ keyword_only_example(1, 2, verbose=True)
 # keyword_only_example(1, 2, True)  # <-- would raise TypeError
 print()
 
+# Positional-only arguments (Python 3.8+): anything before / must be
+# passed by position, not by name.  You see this in many built-in
+# signatures (e.g., len(obj, /)).
+def positional_only_example(x, y, /, z):
+    """x and y must be positional; z can be either."""
+    return x + y + z
+
+print("Positional-only parameter (before /):")
+print(f"  positional_only_example(1, 2, z=3) = {positional_only_example(1, 2, z=3)}")
+# positional_only_example(x=1, y=2, z=3)  # <-- would raise TypeError
+print()
+
 
 # ---------------------------------------------------------------------------
 # 2. THE MUTABLE DEFAULT ARGUMENT TRAP
@@ -331,7 +343,7 @@ print()
 # ---------------------------------------------------------------------------
 # SUMMARY OF INTERVIEW TAKEAWAYS
 # ---------------------------------------------------------------------------
-# - Know the argument order: positional, *args, keyword-only, **kwargs.
+# - Know the full argument order: positional-only (/), regular, *args, keyword-only, **kwargs.
 # - Never use a mutable default argument; use None as a sentinel.
 # - LEGB is the name lookup order. Use 'global' and 'nonlocal' to write
 #   to outer scopes (but prefer returning values instead).

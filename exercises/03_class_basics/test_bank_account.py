@@ -4,6 +4,15 @@ from bank_account import BankAccount
 
 class TestBankAccount(unittest.TestCase):
 
+    def setUp(self):
+        # Reset class-level transaction_history between tests.
+        # This is necessary because the BUG in bank_account.py uses a
+        # class attribute instead of an instance attribute.  Without this
+        # reset, entries accumulate across test methods and the failure
+        # messages become confusing.
+        from bank_account import BankAccount
+        BankAccount.transaction_history = []
+
     def test_initial_balance_default(self):
         account = BankAccount("Alice")
         self.assertEqual(account.get_balance(), 0)

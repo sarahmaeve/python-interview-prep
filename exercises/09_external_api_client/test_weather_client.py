@@ -89,7 +89,12 @@ class TestGetForecast(unittest.TestCase):
         client = WeatherClient("http://example.com")
         client.get_forecast("New York", days=1)
         called_url = mock_urlopen.call_args[0][0]
-        # "New York" must become "New%20York" (or "New+York") -- no raw space
+        # "New York" must not appear as a raw space in the URL.
+        # We require %20 encoding (urllib.parse.quote) rather than + encoding
+        # (urllib.parse.quote_plus) because this is a URL path/query value,
+        # not an HTML form submission.  quote() produces %20; quote_plus()
+        # produces +.  Both are valid in query strings per RFC 3986, but %20
+        # is the more general form and what urllib.parse.quote produces.
         self.assertNotIn(" ", called_url)
         self.assertIn("New%20York", called_url)
 

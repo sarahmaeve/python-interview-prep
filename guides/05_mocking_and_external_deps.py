@@ -19,6 +19,11 @@ import json
 import time
 from unittest.mock import MagicMock, patch, call, mock_open
 
+# NOTE: We use MagicMock (not plain Mock) throughout this guide.
+# MagicMock pre-configures dunder methods (__len__, __iter__, __enter__,
+# __exit__, etc.) so the mock works as a context manager, in len() calls,
+# and in iteration.  Plain Mock does not.  When in doubt, use MagicMock.
+
 # ---------------------------------------------------------------------------
 # Section 1: Why We Mock
 # ---------------------------------------------------------------------------
@@ -50,14 +55,10 @@ def get_user_email_hard(user_id):
 # TESTABLE VERSION -- accept an HTTP client as a parameter (dependency
 # injection).  In production you pass a real client; in tests, a mock.
 
-def get_user_email(user_id, http_client=None):
+def get_user_email(user_id, http_client):
     """Fetch a user's email.  *http_client* must have a .get(url) method
-    that returns an object with a .json() method (like requests.Response)."""
-    if http_client is None:
-        # Default to a real HTTP library in production.  We import here so
-        # the module still loads even if requests is not installed.
-        import urllib.request as _client
-        http_client = _client
+    that returns an object with a .json() method (like requests.Response).
+    In production, pass a real HTTP client; in tests, pass a mock."""
     url = f"https://api.example.com/users/{user_id}"
     response = http_client.get(url)
     return response.json()["email"]
@@ -127,7 +128,24 @@ def demo_patch_location():
         mock_send.assert_called_once_with("ada", "Welcome!")
 
     print("  PASS: register_user works, notification was mocked out")
-    print("  (send_notification was never really called)\n")
+    print("  (send_notification was never really called)")
+
+    # You can also use @patch as a decorator instead of a context manager.
+    # The mock is passed as an extra argument to the test function.
+    # This is the most common form in real test suites:
+    #
+    #   @patch("mymodule.send_notification")
+    #   def test_register(self, mock_send):
+    #       result = register_user("ada")
+    #       mock_send.assert_called_once_with("ada", "Welcome!")
+    #
+    # With stacked decorators, arguments are passed bottom-up:
+    #
+    #   @patch("mymodule.func_b")     # <-- second argument
+    #   @patch("mymodule.func_a")     # <-- first argument
+    #   def test_both(self, mock_a, mock_b):
+    #       ...
+    print()
 
 
 # ---------------------------------------------------------------------------

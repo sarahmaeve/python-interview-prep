@@ -174,6 +174,19 @@ points = [Point(1, 2), Point(3, 4)]
 print(f"  print(list) -> {points}")     # [Point(1, 2), Point(3, 4)]
 print()
 
+# --- __eq__ and __hash__ ---
+# Defining __eq__ makes your objects comparable. But Python then sets
+# __hash__ = None, making the object unhashable (can't use in sets or
+# as dict keys).  If you need both, define __hash__ too.
+#
+#   class Point:
+#       def __init__(self, x, y):
+#           self.x, self.y = x, y
+#       def __eq__(self, other):
+#           return isinstance(other, Point) and (self.x, self.y) == (other.x, other.y)
+#       def __hash__(self):
+#           return hash((self.x, self.y))
+
 
 # ---------------------------------------------------------------------------
 # 5. PROPERTY DECORATORS
@@ -235,6 +248,21 @@ class Animal:
 
     def speak(self):
         raise NotImplementedError("Subclasses must implement speak()")
+
+# PREFERRED: use abc.ABC + @abstractmethod instead of NotImplementedError.
+# This catches missing implementations at instantiation time, not at call time.
+#
+# from abc import ABC, abstractmethod
+#
+# class Animal(ABC):
+#     @abstractmethod
+#     def speak(self):
+#         pass
+#
+# a = Animal()  # TypeError immediately -- can't instantiate abstract class
+#
+# NotImplementedError is the older pattern and only triggers when the
+# method is actually called, meaning broken objects can exist silently.
 
 class Cat(Animal):
     def speak(self):
@@ -416,6 +444,24 @@ print(f"  After copying: todo2.count() = {todo2.count()}")  # 2, correct!
 print("  Rule: return list(self._items), not self._items")
 print("  Rule: copy mutable args in __init__ if the caller might change them")
 print()
+
+
+# --- @dataclass: the modern shortcut ---
+# For classes that are mainly data containers, @dataclass generates
+# __init__, __repr__, and __eq__ automatically:
+#
+# from dataclasses import dataclass
+#
+# @dataclass
+# class Point:
+#     x: float
+#     y: float
+#
+# p1, p2 = Point(1.0, 2.0), Point(1.0, 2.0)
+# print(p1)          # Point(x=1.0, y=2.0)  — auto __repr__
+# print(p1 == p2)    # True                  — auto __eq__
+#
+# Add frozen=True for immutable + hashable: @dataclass(frozen=True)
 
 
 # ---------------------------------------------------------------------------

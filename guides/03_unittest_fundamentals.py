@@ -149,9 +149,11 @@ class TestAssertionMethods(unittest.TestCase):
 
     # --- Container comparisons ---
     def test_assert_count_equal(self):
-        # Checks that two sequences have the same elements regardless of order.
-        # (It does NOT check that counts are equal, despite the name.)
+        # Checks that two sequences have the same elements WITH the same
+        # counts, regardless of order.  The name refers to "counting
+        # occurrences" — [1, 1, 2] != [1, 2, 2] because the counts differ.
         self.assertCountEqual([3, 1, 2], [1, 2, 3])
+        # self.assertCountEqual([1, 1, 2], [1, 2, 2])  # would FAIL
 
 
 # ============================================================================

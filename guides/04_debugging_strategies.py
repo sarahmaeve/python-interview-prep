@@ -197,7 +197,19 @@ def case_study_print_debugging():
         # This is what strategic print-debugging looks like: labeled values,
         # comparing actual vs expected, so you can spot the divergence.
         print(f"  {status}: grades={grades}  expected={expected}  got={result}")
-    print()
+
+    # --- Beyond print: breakpoint() ---
+    # For interactive debugging, use breakpoint() (Python 3.7+).
+    # It drops you into pdb where you can:
+    #   p variable    — print a variable's value
+    #   n             — execute the next line
+    #   s             — step into a function call
+    #   c             — continue to the next breakpoint
+    #   w             — show the call stack
+    # In an interview, mentioning "I'd set a breakpoint here" shows maturity.
+    # Don't use breakpoint() in committed code — it's for local debugging only.
+    print("  TIP: For interactive debugging, use breakpoint() (Python 3.7+).")
+    print("       It drops you into pdb — much more powerful than print().\n")
 
 
 # ============================================================================
@@ -436,6 +448,9 @@ def case_study_mutation_while_iterating():
     print(f"  Fix 1 (comprehension): {fixed_1}")
 
     # FIX 2: Iterate over a copy of the list.
+    # CAVEAT: .remove() deletes the first match by VALUE, not by position.
+    # This works here because all "done" values are interchangeable. If your
+    # list has duplicates you need to keep, use Fix 1 or Fix 3 instead.
     fixed_2 = list(tasks)
     for task in list(fixed_2):   # list() makes a copy to iterate
         if task == "done":

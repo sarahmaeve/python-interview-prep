@@ -102,7 +102,6 @@ class TestLowStockReport(unittest.TestCase):
 
 
 class TestFetchSupplierPrice(unittest.TestCase):
-    # BUG 1: Wrong patch target.
     @patch("urllib.request.urlopen")
     def test_fetch_supplier_price(self, mock_urlopen):
         """Verify that fetch_supplier_price returns the price from the API."""
@@ -122,7 +121,6 @@ class TestFetchSupplierPrice(unittest.TestCase):
 
 
 class TestRestock(unittest.TestCase):
-    # BUG 2: Typo hidden by missing spec.
     def test_restock_calls_execute(self):
         """After restocking, the service should write to the DB via execute."""
         mock_db = MagicMock()  # no spec=Database
@@ -137,7 +135,6 @@ class TestRestock(unittest.TestCase):
 
 
 class TestGetStockWithTimestamp(unittest.TestCase):
-    # BUG 3: Wrong return type from mock.
     @patch("inventory_service.get_current_time")
     def test_get_stock_with_timestamp(self, mock_time):
         """Verify the response includes an ISO-formatted timestamp."""
@@ -155,7 +152,6 @@ class TestGetStockWithTimestamp(unittest.TestCase):
 
 
 class TestShouldReorder(unittest.TestCase):
-    # BUG 4: Stacked @patch decorators with swapped arguments.
     @patch.object(InventoryService, "fetch_supplier_price")
     @patch.object(InventoryService, "get_stock")
     def test_should_reorder_checks_price(self, mock_fetch, mock_stock):
