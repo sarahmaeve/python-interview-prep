@@ -9,8 +9,6 @@ class Shape:
         raise NotImplementedError("Subclasses must implement area()")
 
     def __str__(self):
-        # BUG 3: self.area is not called — missing ().
-        # Prints something like "Rectangle: area=<bound method ...>"
         return f"{self.name}: area={self.area}"
 
 
@@ -31,8 +29,6 @@ class Square(Rectangle):
         self.side = side
 
     def resize(self, new_side):
-        # BUG 1: Only updates self.side but not self.width and self.height,
-        # so area() (inherited from Rectangle) still uses the old values.
         self.side = new_side
 
 
@@ -42,6 +38,4 @@ class Circle(Shape):
         self.radius = radius
 
     def area(self):
-        # BUG 2: This is the circumference formula, not area.
-        # Should be: math.pi * self.radius ** 2
         return self.radius * 2 * math.pi

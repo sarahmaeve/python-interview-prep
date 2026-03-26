@@ -3,7 +3,6 @@
 
 def read_sales_data(filepath):
     """Read a CSV file and return a list of dicts with product, quantity, price."""
-    # BUG 1: File is opened but never closed (no with statement, no .close())
     f = open(filepath, "r")
     lines = f.read().strip().split("\n")
 
@@ -28,15 +27,13 @@ def calculate_totals(sales_data):
     for row in sales_data:
         product = row["product"]
         revenue = row["quantity"] * row["price"]
-        # BUG 2: setdefault initializes to 0, but then we overwrite instead of accumulate
         totals.setdefault(product, 0)
-        totals[product] = revenue  # Should be += revenue
+        totals[product] = revenue
     return totals
 
 
 def generate_report(filepath, output_path):
     """Read sales data, calculate totals, and write a summary report."""
-    # BUG 3: Catches FileNotFoundError but still writes an empty report
     try:
         sales_data = read_sales_data(filepath)
     except FileNotFoundError:

@@ -97,8 +97,6 @@ class TestLowStockReport(unittest.TestCase):
 
 
 # ---------------------------------------------------------------------------
-# BUGGY tests (these 4 fail -- fix them!)
-# ---------------------------------------------------------------------------
 
 
 class TestFetchSupplierPrice(unittest.TestCase):

@@ -27,7 +27,6 @@ class NotificationService:
 
     def send_email(self, to, subject, body):
         """Send an email using the email client."""
-        # BUG 1: Creates a new SmtpClient instead of using self.email_client
         client = SmtpClient()
         client.send(to, subject, body)
 
@@ -37,7 +36,6 @@ class NotificationService:
 
     def should_send(self, schedule):
         """Check if current time is within scheduled hours."""
-        # BUG 2: Uses datetime.datetime.now() instead of self.clock()
         now = datetime.datetime.now()
         current_hour = now.hour
         return schedule["start_hour"] <= current_hour < schedule["end_hour"]
@@ -45,7 +43,6 @@ class NotificationService:
     def format_message(self, template, data):
         """Format a message template with data dict."""
         try:
-            # BUG 3: Uses {user_name} (underscore) but data has "username" (no underscore)
             formatted = template.format(user_name=data.get("username", ""),
                                         order_id=data.get("order_id", ""),
                                         balance=data.get("balance", ""))
@@ -63,6 +60,5 @@ class NotificationService:
                 sent.append(recipient)
             except Exception:
                 failed.append(recipient)
-                # BUG 4: Breaks out of loop on first failure
                 break
         return {"sent": sent, "failed": failed}

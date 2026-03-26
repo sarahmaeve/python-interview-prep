@@ -23,7 +23,6 @@ class ConfigParser:
         Any keys present in *defaults* but missing from *config_dict* are
         filled in automatically.
         """
-        # BUG 1: bare except catches KeyboardInterrupt and SystemExit
         try:
             for key, value in config_dict.items():
                 self._config[key] = value
@@ -50,7 +49,6 @@ class ConfigParser:
         fails.
         """
         value = self.get(key)
-        # BUG 2: re-raises as generic Exception with empty message
         try:
             return int(value)
         except ValueError:
@@ -66,7 +64,6 @@ class ConfigParser:
 
         Raises ``TypeError`` if *required_keys* is not iterable (e.g. None).
         """
-        # BUG 3: silently swallows TypeError when required_keys is None
         try:
             missing = [k for k in required_keys if k not in self._config]
         except TypeError:

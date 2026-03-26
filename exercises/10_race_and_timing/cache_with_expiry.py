@@ -24,8 +24,6 @@ class TimedCache:
         if key not in self._cache:
             raise KeyError(key)
         value, expiry = self._cache[key]
-        # BUG 1: should be `>` not `>=` -- at exactly expiry time the entry
-        # should still be accessible.
         if time.time() >= expiry:
             del self._cache[key]
             raise KeyError(key)
@@ -34,14 +32,10 @@ class TimedCache:
     def cleanup(self):
         """Remove all expired entries from the cache."""
         now = time.time()
-        # BUG 2: modifying dict while iterating over .keys() raises RuntimeError
-        # in Python 3.  Should use list(self._cache.keys()).
         for key in self._cache.keys():
             if now > self._cache[key][1]:
                 del self._cache[key]
 
     def size(self):
         """Return the number of non-expired entries."""
-        # BUG 3: counts expired-but-not-cleaned entries.  Should filter by
-        # expiry time.
         return len(self._cache)

@@ -18,7 +18,7 @@ def parse_records(raw_data):
     for raw in raw_data:
         record = StudentRecord(
             name=raw["name"],
-            student_id=raw["student_id"],  # BUG 2: raw value is int, not str
+            student_id=raw["student_id"],
             grades=raw.get("grades", {}),
         )
         records.append(record)
@@ -28,7 +28,7 @@ def parse_records(raw_data):
 def calculate_gpa(record):
     """Return the student's GPA (average of all grades)."""
     if not record.grades:
-        return  # BUG 1: returns None instead of a float
+        return
 
     total = sum(record.grades.values())
     return total / len(record.grades)
@@ -43,7 +43,7 @@ def get_honor_roll(records, min_gpa=3.5):
             honor.append(record.name)
 
     if not honor:
-        return None  # BUG 3: returns None instead of empty list
+        return None
 
     return honor
 
@@ -51,7 +51,6 @@ def get_honor_roll(records, min_gpa=3.5):
 def merge_records(existing, new):
     """Merge two records for the same student, combining their grades."""
     combined_grades = list(existing.grades.items()) + list(new.grades.items())
-    # BUG 4: assigns a list of tuples instead of converting back to dict
     merged = StudentRecord(
         name=existing.name,
         student_id=existing.student_id,

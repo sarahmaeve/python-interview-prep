@@ -27,7 +27,6 @@ class TaskManager:
 
     def remove_completed(self):
         """Remove all completed tasks from the list."""
-        # BUG 1: mutating list while iterating — skips elements
         for task in self.tasks:
             if task["status"] == "completed":
                 self.tasks.remove(task)
@@ -37,7 +36,6 @@ class TaskManager:
 
         Dates are strings in ``MM/DD/YYYY`` format.
         """
-        # BUG 2: lexicographic comparison of date strings
         overdue = []
         for task in self.tasks:
             if task["due_date"] < today:
@@ -49,7 +47,6 @@ class TaskManager:
 
         Returns the number of tasks reassigned.
         """
-        # BUG 3: generator expression consumed twice — second pass does nothing
         matching = (t for t in self.tasks if t["assignee"] == from_user)
 
         count = sum(1 for _ in matching)

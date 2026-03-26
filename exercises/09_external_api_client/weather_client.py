@@ -22,12 +22,10 @@ class WeatherClient:
         url = f"{self.base_url}/temperature?city={city}"
         with urlopen(url) as response:
             data = json.loads(response.read())
-        # BUG 1: wrong key -- API returns "temp", not "temperature"
         return float(data["main"]["temperature"])
 
     def get_forecast(self, city, days=5):
         """Return a list of daily temperatures for the next *days* days."""
-        # BUG 3: city is not URL-encoded, so "New York" creates an invalid URL
         url = f"{self.base_url}/forecast?city={city}&days={days}"
         with urlopen(url) as response:
             data = json.loads(response.read())
@@ -39,6 +37,5 @@ class WeatherClient:
             try:
                 return self.get_temperature(city)
             except URLError:
-                # BUG 2: off-by-one -- should be `retries - 1`, not `retries`
                 if attempt == retries:
                     raise

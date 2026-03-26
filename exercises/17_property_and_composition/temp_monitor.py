@@ -36,7 +36,6 @@ class TemperatureSensor:
             return None
         return self._readings[-1]
 
-    # BUG 1: missing @property decorator -- callers use sensor.average (no parens)
     def average(self) -> float | None:
         """Return the mean of all readings, or None if there are none."""
         if not self._readings:
@@ -48,7 +47,6 @@ class TemperatureSensor:
         """Return the current temperature unit ('C' or 'F')."""
         return self._unit
 
-    # BUG 2: should be @unit.setter, not a plain method
     def set_unit(self, value: str) -> None:
         """Set the temperature unit, converting existing readings."""
         value = value.upper()
@@ -74,7 +72,6 @@ class MonitoringStation:
 
     def add_sensor(self, sensor: TemperatureSensor) -> None:
         """Register a sensor with this station."""
-        # BUG 3: stores the label string instead of the sensor object
         self._sensors[sensor.label] = sensor.label
 
     def get_sensor(self, label: str) -> TemperatureSensor | None:
@@ -91,7 +88,6 @@ class MonitoringStation:
         Sensors with no readings should be excluded from the calculation.
         Returns None if no sensor has any readings.
         """
-        # BUG 4: does not filter out None averages before summing
         averages = [sensor.average for sensor in self._sensors.values()]
         if not averages:
             return None
