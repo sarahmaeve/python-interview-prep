@@ -11,7 +11,12 @@ def title_case(text):
 
 
 def truncate(text, max_length):
-    """Truncate text to max_length, adding '...' if truncated."""
+    """Truncate text to max_length characters, adding '...' if truncated.
+
+    The returned string (including the '...' suffix) must not exceed
+    max_length.  Truncation happens at a character boundary, not a word
+    boundary.  If the text fits within max_length, return it unchanged.
+    """
     if len(text) <= max_length:
         return text
     return text[:max_length] + "..."

@@ -6,13 +6,13 @@
 
 2. **`apply_discount`** -- Treats `percent` as a decimal fraction instead of a percentage. Passing `10` for 10% computes `total - total * 10`, giving a wildly negative number. Should divide by 100.
 
-3. **`format_receipt`** -- Off-by-one error in the loop. `range(len(items) - 1)` skips the last item, so it never appears on the receipt.
+3. **`format_receipt`** -- Item lines print the raw string price without a dollar sign or decimal formatting (`Apple: 1.50`), while the total line correctly uses `$` and `.2f` formatting (`Total: $7.00`). The item lines need consistent currency formatting.
 
 ## Diagnosis Process
 
 - **Bug 1:** The test passes `{"price": "1.50"}` and expects a float result of `7.00`. Running mentally, `0 + "1.50"` raises `TypeError` because you cannot add `str` to `int`. The fix is clear: cast to `float`.
 - **Bug 2:** `apply_discount(100.0, 10)` should return `90.0`. The current code returns `100 - 100*10 = -900`. The percent parameter must be divided by 100.
-- **Bug 3:** `test_multi_item_receipt` expects all three items in output. `range(len(items) - 1)` with 3 items produces `range(2)`, iterating indices 0 and 1 only, omitting index 2 ("Milk").
+- **Bug 3:** `test_single_item_receipt` expects `"Apple: $1.50"` but the code produces `"Apple: 1.50"` — no dollar sign and no `.2f` formatting. The item lines use the raw string price while the total line is properly formatted.
 
 ## The Fix
 
@@ -40,21 +40,21 @@ return total - (total * percent / 100)
 
 ```python
 # Before
-for i in range(len(items) - 1):
+lines.append(f"{item['name']}: {item['price']}")
 
 # After
-for i in range(len(items)):
+lines.append(f"{item['name']}: ${float(item['price']):.2f}")
 ```
 
 ## Why This Bug Matters
 
 - **Bug 1 (type coercion):** Python does not silently convert strings to numbers. In dynamically typed languages it is critical to validate and convert data at system boundaries (e.g., when reading from JSON or a database).
 - **Bug 2 (unit mismatch):** A common source of real-world errors. Always document whether a percentage parameter is `0-100` or `0.0-1.0`, and match the formula to that contract.
-- **Bug 3 (off-by-one):** The classic fencepost error. `range(len(items))` iterates all valid indices. When in doubt, prefer `for item in items` to avoid index math entirely.
+- **Bug 3 (inconsistent formatting):** When displaying monetary values, all amounts should use the same format. Mixing raw strings with formatted floats produces a receipt where the items say `1.50` but the total says `$7.00` — confusing and unprofessional.
 
 ## Discussion
 
 - `calculate_total` could be a one-liner: `sum(float(item["price"]) for item in items)`.
 - Storing prices as strings is common when data comes from JSON; converting early (at parse time) prevents downstream bugs.
-- `format_receipt` would be more Pythonic as `for item in items:` rather than using index-based iteration, which also eliminates the off-by-one risk entirely.
+- Bug 3 interacts with Bug 1: since prices are strings, you must convert to `float` both for summing (Bug 1) and for formatting (Bug 3). A consistent approach is to convert at parse time.
 - `apply_discount` could accept either form if documented, but accepting a human-readable percentage (10 for 10%) is more intuitive for callers.

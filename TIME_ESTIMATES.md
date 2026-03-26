@@ -7,7 +7,7 @@ Use this to compare against your actual times when testing the material.
 
 | # | Exercise | Bugs | Format | Est. Time | Difficulty Drivers |
 |---|----------|------|--------|-----------|-------------------|
-| 01 | Shopping Cart | 3 | Fix impl | 10 min | Short code, isolated bugs (type coercion, formula, off-by-one) |
+| 01 | Shopping Cart | 3 | Fix impl | 10 min | Short code, isolated bugs (type coercion, formula, format inconsistency) |
 | 02 | Text Formatter | 3 | Fix impl | 15 min | String manipulation edge cases; truncate length math |
 | 03 | Bank Account | 3 | Fix impl | 15 min | Class vs instance attribute; cascading bugs (withdraw return → transfer) |
 | 04 | Shapes | 3 | Fix impl | 15 min | Inheritance chain; missing `()` on method call; wrong formula |

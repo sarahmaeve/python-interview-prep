@@ -26,7 +26,7 @@ Pay attention to the data types flowing through each function. Are the inputs wh
 
 <details>
 <summary>Hint 2 (moderate)</summary>
-One function has an arithmetic error involving how percentages are represented. Another has an off-by-one iteration error.
+One function has an arithmetic error involving how percentages are represented. Another has a formatting inconsistency between item lines and the total line.
 </details>
 
 <details>
@@ -34,6 +34,6 @@ One function has an arithmetic error involving how percentages are represented. 
 
 1. `calculate_total`: The `"price"` values in each item dict are strings, not numbers. The function needs to convert them.
 2. `apply_discount`: The `percent` parameter is a whole number (e.g. 10), but the code uses it as if it were already a decimal (0.10).
-3. `format_receipt`: The loop range excludes the last item.
+3. `format_receipt`: Item lines print the raw string price without a `$` sign or consistent formatting, while the total line uses `$` and `.2f` formatting. The item lines need to match.
 
 </details>

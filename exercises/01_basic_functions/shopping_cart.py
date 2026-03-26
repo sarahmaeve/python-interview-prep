@@ -14,7 +14,7 @@ def apply_discount(total, percent):
 def format_receipt(items, total):
     """Format a receipt string listing each item and the total."""
     lines = []
-    for i in range(len(items) - 1):
-        lines.append(f"{items[i]['name']}: ${items[i]['price']}")
+    for item in items:
+        lines.append(f"{item['name']}: {item['price']}")
     lines.append(f"Total: ${total:.2f}")
     return "\n".join(lines)
