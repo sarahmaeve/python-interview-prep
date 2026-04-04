@@ -42,34 +42,30 @@ Use this to compare against your actual times when testing the material.
 | 18 | String Calculator | Write tests | 10 min | 10 stub tests; clear spec; straightforward assertions |
 | 19 | Order Service | Write tests + mocks | 20 min | 10 stub tests; must mock 2 injected clients + patch urlopen |
 
-## Interview Skeleton Exercises (write from scratch)
+## Black Box / Observability / Systems
 
-| # | Exercise | Format | Est. Time | Difficulty Drivers |
-|---|----------|--------|-----------|-------------------|
-| 20 | Data Pipeline | Implement from skeleton | 15 min | 5 functions; closures, higher-order functions; no tests provided |
-| 21 | Library Catalog | Implement from skeleton | 20 min | 3 classes; __eq__/__hash__, @property, composition; 8 test stubs |
-| 22 | Statistics Module | TDD — implement to pass tests | 10 min | 5 functions; tests are complete; just implement the math |
-| 23 | Log Analyzer | Implement from skeleton | 15 min | 5 functions; string parsing, datetime, filtering; no tests provided |
-| 24 | Rate-Limited Client | Implement from skeleton | 15 min | Rate limiting + retry; dependency injection; 7 test stubs with mocks |
-| 25 | Receipt Printer | Refactor messy code | 15 min | Working code + passing tests; extract helpers, name constants, DRY |
-| 26 | Config Validator | Implement from skeleton | 10 min | Dataclass schema; collect-all-errors validation; 10 test stubs |
+| # | Exercise | Bugs | Format | Est. Time | Difficulty Drivers |
+|---|----------|------|--------|-----------|-------------------|
+| 20 | Black Box Wrapper | 3 | Fix wrapper | 20 min | Must discover black box quirks via introspection; adapter pattern; mutable default |
+| 21 | Observability & Logging | 3 | Fix impl | 25 min | logging module; assertLogs in tests; silent error swallowing; log levels |
+| 22 | Systems Integration | 3 | Fix impl | 25 min | Environment config; import-time evaluation; timeout passing; CI flag injection |
 
 ## Summary by Time
 
 | Time | Exercises |
 |------|-----------|
-| 10 min | 01, 14, 18, 22, 26 |
-| 15 min | 02, 03, 04, 13, 15, 16, 17, 20, 23, 24, 25 |
-| 20 min | 05, 06, 07, 08, 19, 21 |
-| 25 min | 09, 10, 11 |
+| 10 min | 01, 14, 18 |
+| 15 min | 02, 03, 04, 13, 15, 16, 17 |
+| 20 min | 05, 06, 07, 08, 19, 20 |
+| 25 min | 09, 10, 11, 21, 22 |
 | 30 min | 12 |
 
 ## Notes
 
 - Times assume the developer has read the relevant guide(s) and is familiar with the concepts.
 - "Reading the tests" is a significant portion of time for exercises 09-12 due to mock setup complexity.
-- Exercises 20, 23 have no tests — the developer must self-validate, which may add time.
-- Exercise 25 (refactoring) time varies significantly by experience — a developer fluent in extract-method refactoring may finish in 10 min; one learning the patterns may take 20.
+- Exercise 20 requires exploring an opaque module first — budget extra time for introspection.
+- Exercise 22 includes discussion questions with no single right answer — practice articulating trade-offs aloud.
 - Your actual times will likely be faster than these estimates on exercises where you're strong, and slower on exercises that cover your weak spots — that's the point. Use the gaps to identify what to study more.
 
 ## Your Times
@@ -95,11 +91,7 @@ Use this to compare against your actual times when testing the material.
 | 17 | Temperature Monitor | 15 min | | | |
 | 18 | String Calculator | 10 min | | | |
 | 19 | Order Service | 20 min | | | |
-| 20 | Data Pipeline | 15 min | | | |
-| 21 | Library Catalog | 20 min | | | |
-| 22 | Statistics Module | 10 min | | | |
-| 23 | Log Analyzer | 15 min | | | |
-| 24 | Rate-Limited Client | 15 min | | | |
-| 25 | Receipt Printer | 15 min | | | |
-| 26 | Config Validator | 10 min | | | |
-| | **Total** | **420 min (7 hrs)** | | | |
+| 20 | Black Box Wrapper | 20 min | | | |
+| 21 | Observability & Logging | 25 min | | | |
+| 22 | Systems Integration | 25 min | | | |
+| | **Total** | **370 min (~6 hrs)** | | | |

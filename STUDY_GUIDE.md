@@ -64,6 +64,7 @@ Work through everything in order. The exercises are numbered by difficulty withi
 - **15-16**: Mock mastery (write mocks, fix broken mocks)
 - **17**: OOP patterns (properties, composition)
 - **18-19**: Test writing (basic and with mocks)
+- **20-22**: Black box interaction, observability, systems integration
 
 ## Key Skills by Interview Area
 
@@ -74,6 +75,9 @@ Work through everything in order. The exercises are numbered by difficulty withi
 | External interactions / mocking | 09, 10, 11, 15, 19 |
 | Clean, maintainable code | 06, 07, 12, 17 |
 | Improving tests | 16, 18, 19 |
+| Black box / opaque dependencies | 20 |
+| Observability / logging | 21 |
+| Systems dialogue (CI/CD, env, retries) | 22 |
 
 ## Guide-to-Exercise Prerequisites
 
@@ -87,3 +91,6 @@ Work through everything in order. The exercises are numbered by difficulty withi
 | 17 | Guide 02 (classes — properties, composition) |
 | 18 | Guide 03 (unittest) |
 | 19 | Guide 03 (unittest), Guide 05 (mocking) |
+| 20 | Guide 05 (mocking — adapter concepts) |
+| 21 | Guide 08 (observability) |
+| 22 | Guide 08 (observability — env config, CI/CD sections) |

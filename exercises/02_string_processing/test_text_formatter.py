@@ -31,6 +31,9 @@ class TestTruncate(unittest.TestCase):
         self.assertLessEqual(len(result), 20)
         self.assertTrue(result.endswith("..."))
 
+    def test_small_strings(self):
+        self.assertEqual(truncate("Heya", 3), "Hey")
+
 
 class TestWordWrap(unittest.TestCase):
     def test_short_text_no_wrap(self):

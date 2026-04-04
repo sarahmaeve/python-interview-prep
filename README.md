@@ -34,6 +34,7 @@ Start with the `guides/` directory. Each file is a heavily commented, runnable P
 | 5 | `05_mocking_and_external_deps.py` | unittest.mock, patching, testing external dependencies |
 | 6 | `06_clean_code_principles.py` | Naming, structure, readability, code smells |
 | 7 | `07_type_hinting.py` | Type annotations, mypy, catching bugs with types |
+| 8 | `08_observability_and_systems.py` | Logging, instrumentation, environment config, CI/CD |
 
 Run any guide to see its demonstrations:
 
@@ -43,7 +44,7 @@ python guides/01_functions_and_scope.py
 
 ### 2. Work Through the Exercises
 
-The `exercises/` directory contains 12 debug exercises in progressive difficulty. Each exercise has:
+The `exercises/` directory contains debug and integration exercises in progressive difficulty. Each exercise has:
 
 - **`README.md`** — Context, instructions, and hints
 - **`<module>.py`** — A buggy implementation (this is what you fix)
@@ -115,3 +116,11 @@ After attempting an exercise, check `solutions/` for a walkthrough of the diagno
 |---|----------|-------------|------|
 | 18 | String Calculator | Writing tests, edge cases | Write a test suite for working code |
 | 19 | Order Service | Writing tests with mocks | Write tests for code with external dependencies |
+
+### Black Box / Observability / Systems
+
+| # | Exercise | Topic Areas | Goal |
+|---|----------|-------------|------|
+| 20 | Black Box Wrapper | Adapter pattern, introspection, opaque dependencies | Fix 3 bugs in a wrapper around an unmodifiable module |
+| 21 | Observability & Logging | `logging` module, `assertLogs`, instrumentation | Fix 3 bugs to make a processor log meaningful warnings |
+| 22 | Systems Integration | Environment config, timeouts, retries, CI/CD | Fix 3 bugs related to deployment environment interaction |
