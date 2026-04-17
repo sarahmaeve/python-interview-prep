@@ -1,6 +1,6 @@
 [project]
 name = "python-interview-prep"
-version = "0.2.0"
+version = "0.4.0"
 description = "Hands-on Python interview prep focused on debugging, testing, and code comprehension."
 readme = "README.md"
 license = { file = "LICENSE" }
