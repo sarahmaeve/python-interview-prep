@@ -208,8 +208,80 @@ def case_study_print_debugging():
     #   w             — show the call stack
     # In an interview, mentioning "I'd set a breakpoint here" shows maturity.
     # Don't use breakpoint() in committed code — it's for local debugging only.
+    #
+    # PYTHONBREAKPOINT environment variable:
+    #   export PYTHONBREAKPOINT=ipdb.set_trace   # use ipdb instead of pdb
+    #   export PYTHONBREAKPOINT=0                # disable all breakpoint() calls
+    # This is gold in CI: PYTHONBREAKPOINT=0 makes forgotten breakpoint() calls
+    # into no-ops instead of hanging the build waiting for stdin.
     print("  TIP: For interactive debugging, use breakpoint() (Python 3.7+).")
-    print("       It drops you into pdb — much more powerful than print().\n")
+    print("       PYTHONBREAKPOINT=0 disables them; =module.fn swaps the tool.\n")
+
+
+# ---------------------------------------------------------------------------
+# 4b. LOGGING EXCEPTIONS WITH FULL STACK TRACES
+# ---------------------------------------------------------------------------
+# When a production service catches an exception, you still want the stack
+# trace in the logs.  Two idioms:
+#
+#   1. logger.exception("context")  — inside an except: block only.  Logs at
+#      ERROR level AND appends the current traceback automatically.
+#
+#   2. logger.error("context", exc_info=True)  — same effect, more explicit.
+#      Useful when the log level isn't ERROR (e.g., exc_info on WARNING).
+#
+# Don't do: logger.error(str(e))  — that throws away the stack trace.
+#
+# For one-off debugging (not logging), traceback.print_exc() dumps the
+# traceback for the currently-handled exception to stderr.  Useful inside
+# a script to see where a swallowed exception came from without stopping
+# the program.
+
+
+def case_study_logging_exceptions():
+    """Show the right way to log an exception with its traceback."""
+    import logging
+    import io
+    import traceback
+
+    print("=" * 60)
+    print("CASE STUDY: Logging exceptions")
+    print("=" * 60)
+
+    # Set up a logger that writes to an in-memory buffer so we can print it.
+    buffer = io.StringIO()
+    handler = logging.StreamHandler(buffer)
+    handler.setFormatter(logging.Formatter("    %(levelname)s: %(message)s"))
+    logger = logging.getLogger("demo.exc")
+    logger.handlers = [handler]
+    logger.setLevel(logging.DEBUG)
+    logger.propagate = False
+
+    def risky():
+        return {"a": 1}["missing"]
+
+    try:
+        risky()
+    except KeyError:
+        # PREFERRED: logger.exception — includes the traceback automatically.
+        logger.exception("failed while looking up required key")
+
+    print("  logger.exception output (traceback included):")
+    for line in buffer.getvalue().rstrip("\n").split("\n"):
+        print(line)
+    print("  Without logger.exception, you'd see only the one-line message.\n")
+
+    # traceback.print_exc() is handy when you want the traceback but don't
+    # have a logger set up.  Great for debugging scripts.
+    print("  traceback.print_exc() equivalent (captured to a string):")
+    try:
+        risky()
+    except KeyError:
+        trace = traceback.format_exc().rstrip()
+        # Print only the last 3 lines for brevity in this demo.
+        for line in trace.split("\n")[-3:]:
+            print(f"    {line}")
+    print()
 
 
 # ============================================================================
@@ -508,6 +580,7 @@ def main():
     case_study_traceback()
     case_study_common_errors()
     case_study_print_debugging()
+    case_study_logging_exceptions()
     case_study_assert_checks()
     case_study_binary_search_debugging()
     case_study_off_by_one()

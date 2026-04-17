@@ -50,14 +50,28 @@ Use this to compare against your actual times when testing the material.
 | 21 | Observability & Logging | 3 | Fix impl | 25 min | logging module; assertLogs in tests; silent error swallowing; log levels |
 | 22 | Systems Integration | 3 | Fix impl | 25 min | Environment config; import-time evaluation; timeout passing; CI flag injection |
 
+## Modern Python Idioms (3.11+)
+
+| # | Exercise | Bugs | Format | Est. Time | Difficulty Drivers |
+|---|----------|------|--------|-----------|-------------------|
+| 23 | Dataclass Refactor | 4 | Fix impl | 20 min | frozen/default_factory/compare=False; replace() vs in-place mutation |
+| 24 | Money and Decimal | 3 | Fix impl | 15 min | Float-Decimal mixing (3.11 raises); banker's vs commercial rounding |
+| 25 | Enum State Machine | 3 | Fix impl | 15 min | Typo hunting across three locations; StrEnum refactor discussion |
+| 26 | pathlib Bugs | 3 | Fix impl | 20 min | Compound suffixes; `.parent` vs path; `rglob` vs `glob` |
+| 27 | match/case Dispatch | 3 | Fix impl | 15 min | Mapping-pattern binding; silent None fallthrough; assert_never discussion |
+| 28 | Context Manager Leaks | 3 | Fix impl | 20 min | Three cleanup-path bugs: class CM, @contextmanager, `with` usage |
+| 29 | Async Retry | 3 | Fix impl | 25 min | Forgotten `await`; retry off-by-one; `time.sleep` blocking the loop |
+| 30 | Pytest Translation | — | Write tests | 20 min | 14 tests to translate; fixtures, parametrize, pytest.raises |
+| 31 | Decorator `@wraps` | 3 | Fix impl | 15 min | Missing wraps; wraps on wrong target; class-level shared state |
+
 ## Summary by Time
 
 | Time | Exercises |
 |------|-----------|
 | 10 min | 01, 14, 18 |
-| 15 min | 02, 03, 04, 13, 15, 16, 17 |
-| 20 min | 05, 06, 07, 08, 19, 20 |
-| 25 min | 09, 10, 11, 21, 22 |
+| 15 min | 02, 03, 04, 13, 15, 16, 17, 24, 25, 27, 31 |
+| 20 min | 05, 06, 07, 08, 19, 20, 23, 26, 28, 30 |
+| 25 min | 09, 10, 11, 21, 22, 29 |
 | 30 min | 12 |
 
 ## Notes
@@ -66,32 +80,13 @@ Use this to compare against your actual times when testing the material.
 - "Reading the tests" is a significant portion of time for exercises 09-12 due to mock setup complexity.
 - Exercise 20 requires exploring an opaque module first — budget extra time for introspection.
 - Exercise 22 includes discussion questions with no single right answer — practice articulating trade-offs aloud.
+- Exercise 30 requires pytest installed (`pip install pytest` or the repo's dev group).
 - Your actual times will likely be faster than these estimates on exercises where you're strong, and slower on exercises that cover your weak spots — that's the point. Use the gaps to identify what to study more.
 
-## Your Times
+## Tracking your own times
 
-| # | Exercise | Estimated | Your Time | Delta | Notes |
-|---|----------|-----------|-----------|-------|-------|
-| 01 | Shopping Cart | 10 min | | | |
-| 02 | Text Formatter | 15 min | | | |
-| 03 | Bank Account | 15 min | | | |
-| 04 | Shapes | 15 min | | | |
-| 05 | User Validator | 20 min | | | |
-| 06 | Event Logger | 20 min | | | |
-| 07 | Config Parser | 20 min | | | |
-| 08 | Task Manager | 20 min | | | |
-| 09 | Weather Client | 25 min | | | |
-| 10 | Cache with Expiry | 25 min | | | |
-| 11 | CSV Report | 25 min | | | |
-| 12 | Notification Service | 30 min | | | |
-| 13 | Grade Processor | 15 min | | | |
-| 14 | Task Registry | 10 min | | | |
-| 15 | Payment Processor | 15 min | | | |
-| 16 | Inventory Service | 15 min | | | |
-| 17 | Temperature Monitor | 15 min | | | |
-| 18 | String Calculator | 10 min | | | |
-| 19 | Order Service | 20 min | | | |
-| 20 | Black Box Wrapper | 20 min | | | |
-| 21 | Observability & Logging | 25 min | | | |
-| 22 | Systems Integration | 25 min | | | |
-| | **Total** | **370 min (~6 hrs)** | | | |
+Copy `YOUR_TIMES.template.md` to `YOUR_TIMES.md` (gitignored) and fill in your actual
+times alongside the estimates. Comparing over several sessions tells you where your
+weak spots are — which is the whole point of this repo.
+
+**Total estimated time for all 31 exercises: ~540 min (~9 hrs)**

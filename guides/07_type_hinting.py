@@ -14,16 +14,22 @@ Interview angle: you will be expected to READ typed code quickly and spot
 when a type annotation reveals a bug.
 """
 
-from __future__ import annotations  # allows newer syntax on 3.9/3.10
+# This guide targets Python 3.11+.  That means we can use the pipe union
+# syntax (`int | None`), lowercase generics (`list[str]`, `dict[str, int]`),
+# `typing.Self`, `typing.Required/NotRequired`, and `typing.assert_never`
+# natively — no `from __future__ import annotations` required.
 
-# We import typing helpers used throughout the guide.
+# Callable lives in collections.abc at runtime (3.9+); typing re-exports it
+# for backward compatibility.  Prefer the collections.abc home.
+from collections.abc import Callable
 from typing import (
     Any,
-    Callable,
-    Optional,
+    NotRequired,
     Protocol,
+    Self,
     TypedDict,
-    Union,
+    assert_never,
+    runtime_checkable,
 )
 
 # ===========================================================================
@@ -103,20 +109,23 @@ print(f"  average([1,2,3,4]) = {average([1, 2, 3, 4])}")
 print()
 
 # ===========================================================================
-# 3. OPTIONAL AND UNION
+# 3. UNIONS AND OPTIONAL VALUES (PIPE SYNTAX)
 # ===========================================================================
-# Optional[X] = Union[X, None] = X | None (3.10+).
-# Common for parameters that default to None.
-# Union[X, Y] = X | Y (3.10+) for "either type".
+# In Python 3.10+, the pipe operator `|` is the idiomatic way to express
+# union types:
+#     X | None   (instead of Optional[X])
+#     X | Y      (instead of Union[X, Y])
+# typing.Optional and typing.Union still work but are legacy — prefer pipes
+# in new code.
 
 _USERS = {1: "Alice", 2: "Bob"}
 
-def find_user(user_id: int) -> Optional[str]:
+def find_user(user_id: int) -> str | None:
     """Look up a user by ID.  Returns None if not found."""
     return _USERS.get(user_id)
 
-# Union is for "either this type or that type" when None is not involved.
-def format_id(identifier: Union[int, str]) -> str:
+# `X | Y` for "either type" when None is not involved.
+def format_id(identifier: int | str) -> str:
     """Accept an int or string ID, return a normalized string form."""
     if isinstance(identifier, int):
         return f"ID-{identifier:05d}"
@@ -139,11 +148,19 @@ print()
 # 4. TYPE ALIASES
 # ===========================================================================
 # Give complex annotations a name to improve readability.
+# On 3.12+, `type UserMap = dict[int, str]` (PEP 695) is the recommended form —
+# the `type` statement creates a lazy alias that plays well with forward
+# references and tooling.  On 3.11 (this guide's floor) plain assignment still
+# works and is widely used.
+
 UserId = int
 Username = str
-UserMap = dict[UserId, Username]
+UserMap = dict[UserId, Username]          # 3.11-compatible form
 
-# Python 3.12+ has `type UserMap = dict[int, str]` -- assignment still common.
+# On 3.12+ prefer:
+#   type UserMap = dict[int, str]
+#   type Matrix  = list[list[float]]
+
 Matrix = list[list[float]]
 
 def transpose(matrix: Matrix) -> Matrix:
@@ -210,11 +227,15 @@ class UserProfile(TypedDict):
     name: str
     age: int
     email: str
+    # NotRequired (3.11+) lets individual keys be optional without making the
+    # whole dict partial (total=False).  Required/NotRequired work per-key.
+    phone: NotRequired[str]
 
 # Checked by mypy at analysis time; at runtime it's just a normal dict.
 def format_profile(profile: UserProfile) -> str:
     return f"{profile['name']} (age {profile['age']}, {profile['email']})"
 
+# 'phone' is NotRequired — this dict is still a valid UserProfile.
 alice: UserProfile = {"name": "Alice", "age": 30, "email": "alice@example.com"}
 
 print("=" * 60)
@@ -238,6 +259,10 @@ print()
 # Protocols define interfaces by structure, not inheritance.
 # "Duck typing with type safety."
 
+# @runtime_checkable lets isinstance(obj, Drawable) work at runtime.
+# Without it, Protocols are static-only.  Use sparingly — runtime
+# structural checks are slower and weaker than explicit type checks.
+@runtime_checkable
 class Drawable(Protocol):
     """Any object with a .draw() -> str method satisfies this Protocol."""
     def draw(self) -> str: ...
@@ -272,6 +297,52 @@ print("  Protocols catch structural mismatches at check time.")
 print()
 
 # ===========================================================================
+# 7b. typing.Self AND EXHAUSTIVENESS WITH typing.assert_never (3.11+)
+# ===========================================================================
+# Self refers to "the current class" — perfect for fluent-builder return
+# types that should work correctly in subclasses.
+
+class QueryBuilder:
+    def __init__(self) -> None:
+        self._filters: list[str] = []
+
+    def where(self, condition: str) -> Self:
+        """Return Self so subclasses get their own class back, not QueryBuilder."""
+        self._filters.append(condition)
+        return self
+
+    def build(self) -> str:
+        return " AND ".join(self._filters) or "TRUE"
+
+
+# assert_never catches missed branches at type-check time.  If you add a new
+# variant to a Literal or Enum later, mypy will flag every assert_never() call
+# that can now be reached.
+Status = str  # in real code this would be a Literal or StrEnum
+
+
+def next_step(status: Status) -> str:
+    if status == "pending":
+        return "process"
+    if status == "done":
+        return "archive"
+    if status == "failed":
+        return "retry"
+    # Unreachable IF we've handled every case.  mypy will verify.
+    # At runtime this raises AssertionError, which is a useful safety net.
+    assert_never(status)  # type: ignore[arg-type]
+
+
+print("=" * 60)
+print("SECTION 7b: typing.Self and exhaustiveness via assert_never")
+print("=" * 60)
+q = QueryBuilder().where("age > 18").where("active = true")
+print(f"  QueryBuilder().where(...).where(...).build()  = {q.build()!r}")
+print("  Self-typed fluent APIs survive subclassing — mypy verifies it.")
+print("  assert_never() + Literal/Enum catches missed cases at check time.\n")
+
+
+# ===========================================================================
 # 8. COMMON PITFALLS
 # ===========================================================================
 print("=" * 60)
@@ -291,6 +362,8 @@ def append_item_good(item: int, items: list[int] | None = None) -> list[int]:
         items = []
     items.append(item)
     return items
+# Note: `items: list[int] | None = None` is the modern idiom.  Pre-3.10 code
+# used `items: Optional[List[int]] = None` — both mean the same thing.
 
 print("  Pitfall A: Mutable default argument")
 result1 = append_item_bad(1)
@@ -354,7 +427,7 @@ print("=" * 60)
 # mypy says: Incompatible return value type (got "Optional[str]",
 #            expected "str") -- because dict.get() can return None.
 #
-# Fix: change to -> Optional[str], or use names[user_id], or add a default.
+# Fix: change to -> str | None, or use names[user_id], or add a default.
 # In interviews, knowing WHY mypy flags something is the key insight.
 print("  Install: pip install mypy")
 print("  Run:     mypy yourfile.py")
@@ -374,22 +447,28 @@ print("  mypy would catch this.  Runtime does not.\n")
 print("=" * 60)
 print("SECTION 10: Interview cheat sheet")
 print("=" * 60)
-# Quick reference table:
+# Quick reference table (Python 3.11+):
 #   x: int                    variable annotation
 #   def f(a: int) -> str:     parameter + return type
-#   list[str]                 list of strings (3.9+)
+#   list[str]                 list of strings
 #   dict[str, int]            str keys, int values
 #   tuple[int, str]           fixed-length tuple
 #   tuple[int, ...]           variable-length tuple of ints
-#   Optional[str]             str | None
-#   Union[int, str]           int | str  (3.10+ pipe syntax)
-#   Callable[[int], str]      function (int) -> str
+#   str | None                "str or None" (preferred over Optional[str])
+#   int | str                 "int or str"   (preferred over Union[int, str])
+#   Callable[[int], str]      function (int) -> str  (from collections.abc)
 #   TypedDict                 dict with known structure
+#     NotRequired[T]            optional key inside a TypedDict (3.11+)
 #   Protocol                  structural interface (duck typing)
+#     @runtime_checkable        opt-in isinstance() support for Protocols
+#   Self                      "this class" in method signatures (3.11+)
+#   assert_never(x)           exhaustiveness check — mypy catches missed cases
+#   type Alias = ...          lazy type alias (3.12+)
+#   def f[T](x: T) -> T:      PEP 695 generic function syntax (3.12+)
 print("  Key interview talking points:")
 print("  - Type hints are NOT enforced at runtime.")
 print("  - They help you READ code faster and catch bugs BEFORE running.")
-print("  - Use Optional when None is valid -- forces callers to check.")
+print("  - Use `X | None` when None is valid -- forces callers to check.")
 print("  - Prefer TypedDict over dict[str, Any] for structured data.")
 print("  - Protocols enable duck typing with static verification.")
 print("  - Always run mypy/pyright in CI to keep hints honest.")

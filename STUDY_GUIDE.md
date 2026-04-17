@@ -65,19 +65,29 @@ Work through everything in order. The exercises are numbered by difficulty withi
 - **17**: OOP patterns (properties, composition)
 - **18-19**: Test writing (basic and with mocks)
 - **20-22**: Black box interaction, observability, systems integration
+- **23-25**: Modern data types (dataclass, Decimal, StrEnum)
+- **26-27**: Modern control flow (pathlib, match/case)
+- **28**: Context manager discipline
+- **29**: asyncio testing
+- **30**: Pytest translation
+- **31**: Decorator hygiene (`functools.wraps`)
 
 ## Key Skills by Interview Area
 
 | Interview Focus | Most Relevant Exercises |
 |----------------|------------------------|
 | Debugging unfamiliar code | 01, 02, 05, 08, 13 |
-| Test-driven workflow | 05, 14, 18, 19 |
-| External interactions / mocking | 09, 10, 11, 15, 19 |
+| Test-driven workflow | 05, 14, 18, 19, 30 |
+| External interactions / mocking | 09, 10, 11, 15, 19, 29 |
 | Clean, maintainable code | 06, 07, 12, 17 |
-| Improving tests | 16, 18, 19 |
+| Improving tests | 16, 18, 19, 30 |
 | Black box / opaque dependencies | 20 |
 | Observability / logging | 21 |
 | Systems dialogue (CI/CD, env, retries) | 22 |
+| Modern value types (@dataclass, StrEnum, Decimal) | 23, 24, 25 |
+| Modern control flow (pathlib, match/case) | 26, 27 |
+| Resource discipline (context managers, decorators) | 28, 31 |
+| asyncio testing | 29 |
 
 ## Guide-to-Exercise Prerequisites
 
@@ -94,3 +104,12 @@ Work through everything in order. The exercises are numbered by difficulty withi
 | 20 | Guide 05 (mocking — adapter concepts) |
 | 21 | Guide 08 (observability) |
 | 22 | Guide 08 (observability — env config, CI/CD sections) |
+| 23 | Guide 02 (§9 dataclass) + Guide 09 (full) |
+| 24 | Guide 09 (§5 Decimal) |
+| 25 | Guide 02 (§10 StrEnum) + Guide 09 (§4) |
+| 26 | Guide 10 (§1–4 pathlib) |
+| 27 | Guide 10 (§5–8 match/case + assert_never) |
+| 28 | Guide 11 (§1–4 context managers) |
+| 29 | Guide 12 (full) + Guide 05 (§10b AsyncMock) |
+| 30 | Guide 03 (§9 pytest translation cheat sheet) |
+| 31 | Guide 11 (§5–8 decorators) |

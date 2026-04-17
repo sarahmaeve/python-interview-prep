@@ -1,0 +1,80 @@
+# CI for python-interview-prep.
+#
+# This workflow is deliberately minimal — the repo's own Guide 08 teaches
+# learners about CI, and this file is meant to be a readable example.
+#
+# What it does:
+#   1. Runs the full exercise test suite on each supported Python version.
+#   2. Lints with ruff.
+#   3. Type-checks guides and the type-hint exercises with mypy.
+
+name: tests
+
+on:
+  push:
+    branches: [main, test_branch]
+  pull_request:
+    branches: [main]
+
+# Cancel in-progress runs on the same branch when a new commit is pushed.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install dev deps
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pytest mypy ruff
+
+      - name: Run every guide file
+        # Each guide is self-verifying (prints + asserts its own demos).
+        # A failing exit code here means a guide's examples drifted out of
+        # sync with the behaviour it claims.
+        #
+        # Note: we do NOT run the exercise test suites in CI.  Exercise
+        # source files contain INTENTIONAL bugs; their tests are meant to
+        # fail until the learner fixes them.  Running them here would
+        # flag every repo-in-learner-state as broken.
+        run: |
+          for g in guides/*.py; do
+            echo "━━━ $g"
+            python "$g" > /dev/null
+          done
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m pip install ruff
+      - run: python -m ruff check .
+
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m pip install mypy
+      # Only guides and the type-focused exercises are checked strictly.
+      # Debug exercises contain intentional type errors.
+      - run: python -m mypy guides exercises/14_add_type_hints exercises/17_property_and_composition

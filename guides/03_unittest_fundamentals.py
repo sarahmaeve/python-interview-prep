@@ -344,6 +344,89 @@ class TestArrangeActAssert(unittest.TestCase):
 
 
 # ============================================================================
+# 7. subTest -- TABLE-DRIVEN TESTING WITHOUT LOSING FAILURE CONTEXT
+# ============================================================================
+# When you want to run the same assertions over many inputs, a naive for-loop
+# hides failures: the first failing iteration stops the test and you can't see
+# whether the other cases would also fail.
+#
+# subTest() is unittest's answer: each iteration is reported independently,
+# and the test runner shows ALL failures, annotated with the subTest's
+# parameters.
+#
+# This is the unittest analogue of pytest's @pytest.mark.parametrize.
+
+
+class TestSubTestDemo(unittest.TestCase):
+    """Run the same assertion across many inputs without losing detail."""
+
+    def test_all_positive_numbers_square_correctly(self):
+        cases = [(0, 0), (1, 1), (2, 4), (3, 9), (4, 16)]
+        for n, expected in cases:
+            with self.subTest(n=n, expected=expected):
+                self.assertEqual(n * n, expected)
+
+
+# ============================================================================
+# 8. assertRaisesRegex -- CHECK THE EXCEPTION MESSAGE TOO
+# ============================================================================
+# assertRaises checks the exception TYPE.  Sometimes you also want to check
+# the MESSAGE — e.g., to confirm your error message is informative.
+# assertRaisesRegex does both.
+
+
+class TestAssertRaisesRegex(unittest.TestCase):
+    def test_error_message_includes_field_name(self):
+        def validate(age):
+            if age < 0:
+                raise ValueError(f"age must be non-negative, got {age}")
+
+        # Matches a REGEX against the exception's str(), not an exact match.
+        with self.assertRaisesRegex(ValueError, r"age must be non-negative"):
+            validate(-1)
+
+        # The regex can also pin down specific values:
+        with self.assertRaisesRegex(ValueError, r"got -5"):
+            validate(-5)
+
+
+# ============================================================================
+# 9. PYTEST TRANSLATION CHEAT SHEET
+# ============================================================================
+# Most real-world Python teams in 2025 use pytest, not unittest.  The
+# concepts are the same — only the syntax differs.  If the next codebase
+# you see uses pytest, here's the translation table:
+#
+#     unittest                         pytest
+#   ───────────────────────────────   ──────────────────────────────────────
+#   class TestFoo(TestCase):          def test_foo():                  (plain fn)
+#   self.assertEqual(a, b)            assert a == b
+#   self.assertTrue(x)                assert x
+#   self.assertRaises(E)              with pytest.raises(E):
+#   self.assertRaisesRegex(E, "msg")  with pytest.raises(E, match="msg"):
+#   self.assertLogs(logger, level)    caplog fixture — assert "..." in caplog.text
+#   setUp / tearDown                  @pytest.fixture  (yield-based)
+#   setUpClass                        @pytest.fixture(scope="class")
+#   @unittest.skip / skipIf           @pytest.mark.skip / skipif
+#   for case in cases: with subTest   @pytest.mark.parametrize("x,y", [...])
+#   @patch("mod.fn") as mock          monkeypatch fixture / mocker fixture
+#   tempfile / cleanup in tearDown    tmp_path fixture (auto-cleanup)
+#
+# Pytest's big wins over unittest:
+#   - Plain `assert` — better failure messages, no boilerplate methods.
+#   - Fixtures compose (setup A + setup B + ...) whereas setUp is one-shot.
+#   - parametrize is clearer than subTest for most uses.
+#   - Discovery is flexible; no class required.
+#
+# unittest's remaining strengths:
+#   - Zero dependencies — it's in the stdlib.
+#   - Xunit-style structure is familiar across many languages.
+#
+# Exercise 30 (pytest translation) has you translate an existing unittest
+# suite into pytest line-by-line to make the mapping muscle-memory.
+
+
+# ============================================================================
 # ENTRY POINT
 # ============================================================================
 # This lets you run the file directly:  python guides/03_unittest_fundamentals.py

@@ -446,22 +446,215 @@ print("  Rule: copy mutable args in __init__ if the caller might change them")
 print()
 
 
-# --- @dataclass: the modern shortcut ---
-# For classes that are mainly data containers, @dataclass generates
-# __init__, __repr__, and __eq__ automatically:
-#
-# from dataclasses import dataclass
-#
-# @dataclass
-# class Point:
-#     x: float
-#     y: float
-#
-# p1, p2 = Point(1.0, 2.0), Point(1.0, 2.0)
-# print(p1)          # Point(x=1.0, y=2.0)  — auto __repr__
-# print(p1 == p2)    # True                  — auto __eq__
-#
-# Add frozen=True for immutable + hashable: @dataclass(frozen=True)
+# ---------------------------------------------------------------------------
+# 9. @dataclass -- THE MODERN WAY TO WRITE DATA CLASSES
+# ---------------------------------------------------------------------------
+# In Python 3.11+, @dataclass should be your first reach for any class that
+# mostly carries data.  It auto-generates __init__, __repr__, __eq__, and
+# optionally __hash__ and ordering methods — you don't have to write them.
+
+from dataclasses import dataclass, field, replace
+
+print("=== 9. @dataclass ===")
+
+
+@dataclass
+class Point:
+    """A 2-D point.  __init__, __repr__, and __eq__ are auto-generated."""
+    x: float
+    y: float
+
+
+p1 = Point(1.0, 2.0)
+p2 = Point(1.0, 2.0)
+print(f"  Point(1.0, 2.0)         = {p1}")            # auto __repr__
+print(f"  Point(1,2) == Point(1,2) = {p1 == p2}")      # auto __eq__
+print(f"  Point(1,2).x            = {p1.x}")
+
+# --- frozen=True: immutable + hashable ---
+# A frozen dataclass raises FrozenInstanceError if you try to mutate it.
+# That alone prevents a huge class of bugs (see exercise 23).  As a bonus,
+# frozen instances are hashable, so they work as dict keys or set members.
+
+
+@dataclass(frozen=True)
+class Coordinate:
+    lat: float
+    lon: float
+
+
+c = Coordinate(37.77, -122.41)
+try:
+    c.lat = 0.0  # type: ignore[misc]
+except Exception as e:
+    print(f"  frozen mutation raised: {type(e).__name__}: {e}")
+print(f"  hash(Coordinate(...))   = {hash(c) != 0}  (frozen dataclasses hash)")
+
+# --- field(default_factory=...): the fix for mutable defaults ---
+# Writing `tags: list[str] = []` in a dataclass raises ValueError at class
+# definition time — Python forbids it because of the shared-default bug from
+# Section 2.  Use field(default_factory=list) instead.
+
+
+@dataclass
+class Article:
+    title: str
+    tags: list[str] = field(default_factory=list)   # fresh list per instance
+
+
+a1 = Article("First")
+a2 = Article("Second")
+a1.tags.append("draft")
+print(f"  a1.tags = {a1.tags}, a2.tags = {a2.tags}   (independent)")
+
+# --- kw_only=True (3.10+) ---
+# Force keyword-only construction.  Prevents ordering bugs when a dataclass
+# has many fields of the same type.
+
+
+@dataclass(kw_only=True)
+class EmailTemplate:
+    subject: str
+    body: str
+    cc: str | None = None
+
+
+# EmailTemplate("Hi", "Body")   # TypeError — positional not allowed
+t = EmailTemplate(subject="Hi", body="Body")
+print(f"  kw_only dataclass: {t}")
+
+# --- slots=True (3.10+) ---
+# Adds __slots__ for memory efficiency and to prevent accidental attribute
+# creation (typos).
+
+
+@dataclass(slots=True)
+class Sensor:
+    id: int
+    name: str
+
+
+s = Sensor(1, "temp")
+try:
+    s.labl = "typo"  # type: ignore[attr-defined]
+except AttributeError as e:
+    print(f"  slots dataclass caught typo: AttributeError: {e}")
+
+# --- replace(): create a modified copy ---
+# The idiomatic way to "mutate" a frozen dataclass is to produce a new one.
+c2 = replace(c, lat=40.0)
+print(f"  replace(c, lat=40.0)    = {c2}")
+print("  RULE: reach for @dataclass first; only write __init__ by hand when")
+print("  you need behavior dataclasses don't give you.\n")
+
+
+# ---------------------------------------------------------------------------
+# 10. Enum AND StrEnum — TYPED SET OF ALLOWED VALUES
+# ---------------------------------------------------------------------------
+# When a field can only take a handful of values, use an Enum.  String
+# constants like "pending" / "completed" invite typos; Enums make them
+# impossible: Status.PENDNIG raises AttributeError at import time.
+
+from enum import Enum, StrEnum, auto
+
+print("=== 10. Enum and StrEnum ===")
+
+
+class Priority(Enum):
+    LOW = 1
+    MEDIUM = 2
+    HIGH = 3
+
+
+print(f"  Priority.HIGH         = {Priority.HIGH}")
+print(f"  Priority.HIGH.value   = {Priority.HIGH.value}")
+print(f"  Priority.HIGH.name    = {Priority.HIGH.name}")
+print(f"  list(Priority)        = {list(Priority)}")
+
+# StrEnum (Python 3.11+) — members compare equal to plain strings.  This
+# is the sweet spot for protocol-level enums (JSON, HTTP headers, log
+# levels, status flags): serialise naturally but still catch typos.
+
+
+class OrderStatus(StrEnum):
+    PENDING = "pending"
+    PAID = "paid"
+    SHIPPED = "shipped"
+    CANCELLED = "cancelled"
+
+
+s = OrderStatus.PAID
+print(f"  OrderStatus.PAID       = {s}            (is equal to 'paid': {s == 'paid'})")
+print(f"  json.dumps serializes  = {s.value!r}")
+
+# auto() lets you skip the values when they don't matter.
+
+
+class Side(Enum):
+    LEFT = auto()
+    RIGHT = auto()
+
+
+print(f"  auto() values          = {[s.value for s in Side]}")
+
+# Pattern: match on an Enum — mypy verifies exhaustiveness when combined
+# with typing.assert_never (see Guide 07).
+
+
+def next_status(s: OrderStatus) -> OrderStatus:
+    match s:
+        case OrderStatus.PENDING:  return OrderStatus.PAID
+        case OrderStatus.PAID:     return OrderStatus.SHIPPED
+        case OrderStatus.SHIPPED | OrderStatus.CANCELLED:
+            return s
+
+
+print(f"  next_status(PENDING)   = {next_status(OrderStatus.PENDING)}")
+print("  RULE: reach for StrEnum when values hit a protocol (JSON/HTTP/logs).")
+print("  Reach for Enum when the values are internal and typos would hurt.\n")
+
+
+# ---------------------------------------------------------------------------
+# 11. @cached_property — COMPUTE ONCE, REMEMBER
+# ---------------------------------------------------------------------------
+# functools.cached_property turns expensive computations into attributes
+# that run on first access and cache the result.  Use it when:
+#   - The computation depends only on immutable instance state.
+#   - The result would be identical across calls.
+#   - Computing it is non-trivial (a loop, a network call, a big sum).
+
+from functools import cached_property
+
+print("=== 11. @cached_property ===")
+
+
+class DatasetStats:
+    """Computes statistics from a list of numbers — lazily and once."""
+
+    def __init__(self, values: list[float]) -> None:
+        self._values = list(values)  # defensive copy
+
+    @cached_property
+    def mean(self) -> float:
+        print("    (mean computed)")
+        return sum(self._values) / len(self._values)
+
+    @cached_property
+    def total(self) -> float:
+        print("    (total computed)")
+        return sum(self._values)
+
+
+d = DatasetStats([1.0, 2.0, 3.0, 4.0])
+print(f"  d.mean  = {d.mean}   (first access — computes)")
+print(f"  d.mean  = {d.mean}   (second access — cached, no recompute)")
+print(f"  d.total = {d.total}")
+
+# Gotcha: @cached_property writes to self.__dict__.  If __slots__ is in use
+# WITHOUT including the attribute, the write fails with AttributeError.
+# For dataclasses with slots=True, add the cached_property name to __slots__
+# or skip slots on that class.
+print("  WARNING: @cached_property + __slots__ needs the name in __slots__.\n")
 
 
 # ---------------------------------------------------------------------------
@@ -476,5 +669,8 @@ print()
 #   is not a natural "is-a".
 # - Always call super().__init__() in subclasses to avoid missing attrs.
 # - Return copies of internal mutable state, not direct references.
+# - Reach for @dataclass (frozen/slots/kw_only) before writing __init__ by hand.
+# - Reach for StrEnum (3.11+) when a field has a small set of allowed values.
+# - @cached_property = "compute once, remember" for expensive read-only props.
 
 print("=== All sections complete. ===")

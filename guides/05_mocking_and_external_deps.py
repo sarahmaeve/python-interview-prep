@@ -251,7 +251,12 @@ def demo_retry_logic():
 
 def utcnow():
     """Thin wrapper so tests can patch THIS function instead of
-    datetime.datetime.now directly."""
+    datetime.datetime.now directly.
+
+    Note: datetime.datetime.utcnow() (without arguments) is DEPRECATED
+    in Python 3.12 because it returns a *naive* datetime despite the name.
+    Always pass tz=datetime.timezone.utc explicitly.
+    """
     return datetime.datetime.now(datetime.timezone.utc)
 
 
@@ -532,6 +537,70 @@ def demo_mock_open():
 
 
 # ---------------------------------------------------------------------------
+# Section 10b: AsyncMock -- MOCKING ASYNC CALLABLES
+# ---------------------------------------------------------------------------
+# `async def` functions return coroutines.  A plain MagicMock returns a
+# MagicMock (not a coroutine), so `await mock_fn()` raises TypeError.
+#
+# AsyncMock fixes this.  It is a drop-in replacement for MagicMock for async
+# contexts: calling it returns a coroutine whose result is configurable via
+# return_value / side_effect, exactly like MagicMock.
+#
+# unittest.mock.AsyncMock is available in Python 3.8+.
+
+import asyncio
+from unittest.mock import AsyncMock
+
+
+async def fetch_then_store(async_client, async_db, key):
+    """Fetch *key* from the async client and persist the result."""
+    value = await async_client.get(key)
+    await async_db.put(key, value)
+    return value
+
+
+def demo_async_mock():
+    print("=" * 60)
+    print("SECTION 10b: AsyncMock for async code")
+    print("=" * 60)
+
+    # Build async mocks with matching interfaces.
+    client = AsyncMock()
+    client.get.return_value = "hello"
+    db = AsyncMock()
+
+    # Run the coroutine to completion.
+    result = asyncio.run(fetch_then_store(client, db, "greeting"))
+    assert result == "hello"
+
+    # Assert on the calls — same API as MagicMock.
+    client.get.assert_awaited_once_with("greeting")
+    db.put.assert_awaited_once_with("greeting", "hello")
+    print("  PASS: async client and db were awaited with expected arguments")
+
+    # side_effect works the same way — each await consumes one item.
+    flaky = AsyncMock(side_effect=[ConnectionError("boom"), "recovered"])
+
+    async def with_retry():
+        try:
+            return await flaky()
+        except ConnectionError:
+            return await flaky()
+
+    assert asyncio.run(with_retry()) == "recovered"
+    assert flaky.await_count == 2
+    print("  PASS: AsyncMock.side_effect behaves just like MagicMock.side_effect")
+
+    # Key methods (note the "_awaited_" variants for AsyncMock):
+    #   mock.assert_awaited()             — was this ever awaited?
+    #   mock.assert_awaited_once()        — exactly once
+    #   mock.assert_awaited_with(...)     — arguments of the LAST await
+    #   mock.assert_awaited_once_with(x)  — combines both
+    #   mock.await_count                  — integer counter
+    print()
+
+
+# ---------------------------------------------------------------------------
 # Section 11: The tradeoff -- mocking too much vs. too little
 # ---------------------------------------------------------------------------
 
@@ -580,6 +649,7 @@ def main():
     demo_spec()
     demo_call_inspection()
     demo_mock_open()
+    demo_async_mock()
     demo_mocking_tradeoffs()
     print("All sections passed.")
 

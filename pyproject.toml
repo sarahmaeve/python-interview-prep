@@ -1,0 +1,114 @@
+[project]
+name = "python-interview-prep"
+version = "0.2.0"
+description = "Hands-on Python interview prep focused on debugging, testing, and code comprehension."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.11"
+
+# The exercises and guides themselves have no runtime dependencies — they're
+# intentionally stdlib-only so learners can pick up the repo and start.
+dependencies = []
+
+[dependency-groups]
+# Install with `pip install --group dev` (pip 25+) or `uv sync --group dev`.
+# These are needed for: the pytest translation exercise (#30), running mypy
+# on the type-hinting exercises, and linting.
+dev = [
+    "pytest>=8.0",
+    "mypy>=1.8",
+    "ruff>=0.6",
+]
+
+# ---------------------------------------------------------------------------
+# Tool configuration
+# ---------------------------------------------------------------------------
+
+[tool.pytest.ini_options]
+# Collect tests from every exercise directory. Each exercise is a standalone
+# package with its own source next to its test file, so rootdir tricks are
+# unnecessary when pytest is invoked from the repo root.
+testpaths = ["exercises", "guides"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+# Silence the "unknown marker" warning in case guides add marker decorators.
+filterwarnings = [
+    "ignore::DeprecationWarning:unittest",
+]
+
+[tool.mypy]
+python_version = "3.11"
+# Strictness dial: strict on guides and the "add type hints" exercise,
+# lenient on debug exercises (they intentionally contain type-unsafe code).
+strict = false
+warn_unused_ignores = true
+warn_return_any = true
+check_untyped_defs = true
+# Exercise 13 is the one place where "mypy would have caught it" is the point:
+# it starts annotated and the bugs are type-detectable.
+exclude = [
+    # Black-box module that simulates a third-party dep; don't type-check it.
+    "exercises/20_black_box_wrapper/quirky_encoder.py",
+]
+
+[[tool.mypy.overrides]]
+# Debug exercises contain deliberate type errors. Running mypy on them is a
+# valid study technique, but we don't want CI to fail.
+module = [
+    "shopping_cart",
+    "text_formatter",
+    "bank_account",
+    "shapes",
+    "user_validator",
+    "event_logger",
+    "config_parser",
+    "task_manager",
+    "weather_client",
+    "cache_with_expiry",
+    "csv_report",
+    "notification_service",
+    "temp_monitor",
+    "payment_processor",
+    "inventory_service",
+    "string_calculator",
+    "order_service",
+    "safe_encoder",
+    "data_processor",
+    "service_client",
+]
+ignore_errors = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+# Conservative ruleset — this repo's priority is pedagogical clarity, not
+# production-grade lint coverage. Enable the essentials and leave stylistic
+# choices (e.g. double-vs-single quote) to the existing code.
+select = [
+    "E",    # pycodestyle errors
+    "F",    # pyflakes
+    "I",    # isort
+    "UP",   # pyupgrade — flags non-3.11 idioms
+    "B",    # flake8-bugbear
+    "SIM",  # flake8-simplify
+]
+ignore = [
+    "E501",  # line length is handled by formatter; don't fight long strings in guides
+    "B008",  # Exercise 22 *intentionally* uses `get_config()` as a default arg
+    "B006",  # Exercises 06, 20 *intentionally* use mutable default args
+    "SIM105", # "use contextlib.suppress" — makes some guide examples less clear
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Guides print everywhere; that's the whole point.
+"guides/*" = ["T201"]
+# Debug exercises have deliberate smells.
+"exercises/**/*.py" = ["UP", "B", "SIM"]
+# Except the test files — we want those to lint cleanly.
+"exercises/**/test_*.py" = []
+
+[tool.ruff.format]
+quote-style = "double"

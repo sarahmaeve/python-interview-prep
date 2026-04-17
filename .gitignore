@@ -49,7 +49,16 @@ coverage.xml
 *.py.cover
 .hypothesis/
 .pytest_cache/
+.ruff_cache/
+.mypy_cache/
 cover/
+
+# Claude Code local settings (should not be committed)
+.claude/settings.local.json
+.claude/worktrees/
+
+# User's local time tracking (see TIME_ESTIMATES.md)
+YOUR_TIMES.md
 
 # Translations
 *.mo

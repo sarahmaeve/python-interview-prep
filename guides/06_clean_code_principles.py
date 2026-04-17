@@ -5,7 +5,9 @@ Paired "before / after" examples of common code smells and refactorings.
 Run:  python guides/06_clean_code_principles.py
 """
 
-from typing import Optional
+# Nothing imported from typing — in Python 3.10+ we use the pipe syntax
+# (`X | None`, `X | Y`) and lowercase builtins (`list[str]`, `dict[str, int]`)
+# natively. typing.Optional / typing.Union are legacy.
 
 # ---
 # Section 1: Naming -- descriptive names over abbreviations
@@ -257,8 +259,10 @@ def find_longest_typed(items: list[str]) -> str:
             best = item
     return best
 
-# Optional signals that None is a valid return value.
-def lookup_user(user_id: int) -> Optional[dict]:
+# `dict | None` signals that None is a valid return value. In 3.10+ the pipe
+# syntax is idiomatic; typing.Optional is legacy and should only appear if
+# you're maintaining pre-3.10 code.
+def lookup_user(user_id: int) -> dict | None:
     """Return user dict or None if not found."""
     users = {1: {"name": "Ada"}, 2: {"name": "Grace"}}
     return users.get(user_id)
@@ -271,7 +275,7 @@ def demo_type_hints():
     assert find_longest_typed(["a", "bb", "ccc"]) == "ccc"
     assert lookup_user(99) is None
     print("  find_longest_typed(items: list[str]) -> str")
-    print("  lookup_user(user_id: int) -> Optional[dict]")
+    print("  lookup_user(user_id: int) -> dict | None")
     print("  The signature tells you what to pass and what to expect.\n")
 
 
@@ -280,15 +284,33 @@ def demo_type_hints():
 # ---
 
 # SMELL 1: Long parameter lists.
-# BEFORE:
+# BEFORE: eight positional arguments that callers have to get in the right order.
 def create_report_before(title, author, dept, start, end, fmt, lang, debug):
     pass  # imagine 50 lines here
 
 
-# AFTER: group related parameters into a dataclass or dict.
-def create_report_after(config: dict):
-    """config keys: title, author, department, date_range, format, language"""
-    pass
+# AFTER: group related parameters into a dataclass.  @dataclass gives you
+# __init__, __repr__, __eq__ and type-checked field names for free.  Callers
+# use keyword-style construction, which reads like a named-argument call.
+from dataclasses import dataclass
+
+
+@dataclass
+class ReportConfig:
+    title: str
+    author: str
+    department: str
+    start_date: str
+    end_date: str
+    format: str = "pdf"
+    language: str = "en"
+    debug: bool = False
+
+
+def create_report_after(config: ReportConfig) -> None:
+    """Generate a report described by *config*."""
+    _ = config  # imagine 50 lines here
+    return None
 
 
 # SMELL 2: Boolean flag that splits a function into two behaviors.
@@ -334,7 +356,7 @@ def demo_code_smells():
     print("=" * 60)
     print("""  SMELL 1 -- Long parameter lists:
     BEFORE: create_report(title, author, dept, start, end, fmt, lang, debug)
-    AFTER:  create_report(config)  -- use a dict or dataclass
+    AFTER:  create_report(ReportConfig(title=..., author=...))  -- named, typed
 
   SMELL 2 -- Boolean flag that changes behavior:
     BEFORE: send_message(to, body, is_urgent=True)
