@@ -80,22 +80,15 @@ class TestApplyTax(unittest.TestCase):
 
 
 class TestQuantizeCents(unittest.TestCase):
-    """Must use commercial rounding (ROUND_HALF_UP), not banker's."""
 
     def test_basic_rounding(self):
         self.assertEqual(quantize_cents(Decimal("1.234")), Decimal("1.23"))
 
-    def test_half_up_rounds_away_from_zero(self):
-        # Banker's rounding: 0.125 -> 0.12 (rounds to even 2).
-        # Commercial: 0.125 -> 0.13 (rounds away from zero at exactly 0.5).
-        self.assertEqual(
-            quantize_cents(Decimal("0.125")), Decimal("0.13"),
-            "commercial rounding must round 0.5 away from zero",
-        )
+    def test_half_rounds_away_from_zero(self):
+        # Exactly 0.5 at the rounding position must round AWAY from zero.
+        self.assertEqual(quantize_cents(Decimal("0.125")), Decimal("0.13"))
 
-    def test_half_up_rounds_away_from_zero_negative_case(self):
-        # Banker's: 2.685 -> 2.68; commercial: 2.685 -> 2.69.
-        # (Note: Python's round() on Decimal uses banker's by default.)
+    def test_half_rounds_away_from_zero_higher_decimal(self):
         self.assertEqual(quantize_cents(Decimal("2.685")), Decimal("2.69"))
 
     def test_already_at_two_decimals_unchanged(self):

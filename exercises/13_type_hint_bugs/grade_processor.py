@@ -11,8 +11,8 @@ every one of them would be flagged.
 from typing import TypedDict
 
 
-# The raw JSON shape the parser is fed.  Note student_id is `int` in the
-# source data, but StudentRecord stores it as `str` (upstream decision).
+# The raw JSON shape the parser is fed (as produced by the upstream data
+# source — you can't change these types).
 class RawStudent(TypedDict):
     name: str
     student_id: int

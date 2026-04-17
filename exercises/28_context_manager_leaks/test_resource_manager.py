@@ -100,15 +100,9 @@ class TestRunQueries(unittest.TestCase):
             "run_queries must release the pool's connection when it returns",
         )
 
-    def test_uses_the_context_manager_protocol(self):
-        """run_queries must use the `with` statement (or equivalent) so
-        the connection is released on every path — not call __enter__ by
-        itself and skip __exit__.
-
-        We verify this by checking that the pool's connection is closed
-        after a successful call.  A buggy implementation that only calls
-        __enter__ leaks the connection.
-        """
+    def test_does_not_leak_the_connection(self):
+        """run_queries must release the pool's connection after every
+        successful call."""
         pool = ConnectionPool("p")
         run_queries(pool, ["SELECT 1", "SELECT 2", "SELECT 3"])
         self.assertTrue(pool.conn.closed,

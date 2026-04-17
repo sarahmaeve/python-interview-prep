@@ -134,8 +134,7 @@ class TestGrantRoleDoesNotMutateSnapshots(unittest.TestCase):
         # The caller's snapshot must still show the old roles.
         self.assertEqual(
             snapshot.roles, (),
-            "grant_role must not mutate the previously-retrieved profile; "
-            "use dataclasses.replace to produce a new instance",
+            "grant_role must not mutate the previously-retrieved profile",
         )
 
     def test_stored_profile_is_replaced_with_the_granted_role(self):

@@ -48,12 +48,11 @@ def apply_tax(amount: Decimal, rate: Decimal) -> Decimal:
 
 
 def quantize_cents(amount: Decimal) -> Decimal:
-    """Round to two decimal places using the standard commercial rule.
+    """Round to two decimal places using commercial rounding.
 
-    Commercial rounding (ROUND_HALF_UP) rounds exactly-0.5 values AWAY
-    from zero.  The decimal module's default, and Python's built-in
-    round(), use banker's rounding (ROUND_HALF_EVEN) which rounds to
-    the nearest even digit — NOT what finance expects.
+    Commercial rounding rounds exactly-0.5 values AWAY from zero (so
+    0.125 -> 0.13, 2.685 -> 2.69).  This is what finance regulations
+    and end users expect.
     """
     return round(amount, 2)
 

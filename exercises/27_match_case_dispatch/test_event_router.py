@@ -32,8 +32,7 @@ class TestKeypress(unittest.TestCase):
         self.assertEqual(result, "key: a")
 
     def test_modifiers_are_honored(self):
-        """Modifiers from the event must reach the handler — bug: the
-        current dispatch drops the list and calls the handler with []."""
+        """Modifiers from the event must reach the handler."""
         result = handle_event({"type": "keypress", "key": "s",
                                "modifiers": ["ctrl", "shift"]})
         self.assertEqual(result, "key: ctrl+shift+s")
@@ -41,8 +40,7 @@ class TestKeypress(unittest.TestCase):
 
 class TestResize(unittest.TestCase):
     def test_resize_carries_dimensions(self):
-        """The resize handler needs width and height — bug: the current
-        dispatch discards them and returns a bare 'resized'."""
+        """The resize handler receives width and height."""
         result = handle_event({"type": "resize", "width": 1024, "height": 768})
         self.assertEqual(result, "resized to 1024x768")
 

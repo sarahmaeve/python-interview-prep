@@ -26,12 +26,7 @@ class TestAsyncFetcher(unittest.IsolatedAsyncioTestCase):
 
         result = await fetcher.fetch("https://example.com/a")
 
-        self.assertEqual(
-            result, {"ok": True},
-            "fetch() must return the awaited value — not a coroutine. "
-            "If you see `<coroutine object ...>` here, the implementation "
-            "forgot to `await` the client call.",
-        )
+        self.assertEqual(result, {"ok": True})
         self.assertEqual(fetcher.attempt_count, 1)
         client.get.assert_awaited_once_with("https://example.com/a")
 
@@ -109,19 +104,12 @@ class TestAsyncFetcher(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(fetcher.attempt_count, 2)
 
 
-class TestBackoffUsesAsyncSleep(unittest.IsolatedAsyncioTestCase):
-    """The backoff must not block the event loop.
-
-    time.sleep() BLOCKS the loop — other concurrent tasks cannot run
-    during the sleep.  asyncio.sleep() yields to the loop instead.
-    """
+class TestBackoffIsConcurrent(unittest.IsolatedAsyncioTestCase):
+    """Concurrent fetches must not serialise during backoff."""
 
     async def test_concurrent_fetches_run_in_parallel(self):
-        """If two fetches run concurrently and both take one retry, the
-        total wall time should be close to `backoff` — not 2*backoff —
-        because asyncio.sleep() lets the other task proceed during the
-        wait.  With time.sleep(), each sleep blocks serially.
-        """
+        """Two fetches that each take one retry should complete in
+        roughly `backoff_seconds` of wall time, not 2×backoff_seconds."""
         call_count = {"a": 0, "b": 0}
 
         async def flaky_get(url):
@@ -141,15 +129,12 @@ class TestBackoffUsesAsyncSleep(unittest.IsolatedAsyncioTestCase):
         await asyncio.gather(fetcher_a.fetch("/a"), fetcher_b.fetch("/b"))
         elapsed = time.perf_counter() - start
 
-        # If backoff used time.sleep, elapsed ~= 0.20s (serialised).
-        # With asyncio.sleep it's ~= 0.10s (concurrent).
-        # Pick 0.17 as a generous upper bound — asyncio's overhead
-        # shouldn't push a 0.10 sleep above that.
+        # Concurrent: elapsed ≈ 0.10s.  Serialised: elapsed ≈ 0.20s.
+        # 0.17 is a generous upper bound that tolerates event-loop overhead.
         self.assertLess(
             elapsed, 0.17,
             f"concurrent fetches with retries took {elapsed:.3f}s; "
-            "likely the backoff uses time.sleep() (blocking) instead of "
-            "await asyncio.sleep() (non-blocking).",
+            "backoff is preventing the event loop from running siblings",
         )
 
 
