@@ -40,4 +40,5 @@ as you work through the exercises. Comparing to the estimates in
 | 32 | Thread Safety            | 25 min | | | |
 | 33 | Capstone: Order Pipeline | 45 min | | | |
 | 34 | Flaky Tests              | 25 min | | | |
-| | **Total** | **~635 min (~10.5 hrs)** | | | |
+| 35 | Debugging with pdb       | 25 min | | | |
+| | **Total** | **~660 min (~11 hrs)** | | | |

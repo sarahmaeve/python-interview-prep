@@ -194,3 +194,9 @@ After attempting an exercise, check `solutions/` for a walkthrough of the diagno
 | # | Exercise | Topic Areas | Goal |
 |---|----------|-------------|------|
 | 34 | Flaky Tests | Unseeded randomness, hash ordering, real clocks, shared fixtures | Fix 4 flaky tests so the suite passes 10 runs in a row |
+
+### Debugger Practice
+
+| # | Exercise | Topic Areas | Goal |
+|---|----------|-------------|------|
+| 35 | Debugging with pdb | `breakpoint()`, stepping, post-mortem, aliasing bugs | Fix 3 bugs by stepping through the code, not reading it |
