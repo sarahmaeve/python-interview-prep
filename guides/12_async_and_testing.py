@@ -33,7 +33,6 @@ import time
 import unittest
 from unittest.mock import AsyncMock
 
-
 # ============================================================================
 # 1. WHAT async def GIVES YOU
 # ============================================================================
@@ -236,7 +235,9 @@ def demo_common_bugs() -> None:
         _ = greet("no-await")
         # Give it a chance to warn when garbage-collected:
         del _
-        import gc; gc.collect()
+        import gc
+
+        gc.collect()
     warning_names = [type(w.message).__name__ for w in caught]
     if "RuntimeWarning" in warning_names:
         print("  forgot-to-await produced a RuntimeWarning (Python is telling you)")

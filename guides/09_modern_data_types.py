@@ -22,10 +22,9 @@ TABLE OF CONTENTS
   6. Interview-style bugs each idiom fixes  (line ~410)
 """
 
-from dataclasses import asdict, dataclass, field, replace
+from dataclasses import asdict, dataclass, field
 from decimal import ROUND_HALF_UP, Decimal, getcontext
 from enum import IntEnum, StrEnum, auto
-
 
 # ============================================================================
 # 1. WHY @dataclass EXISTS
@@ -262,8 +261,10 @@ def demo_str_enum() -> None:
     print("=" * 60)
 
     # Interoperability with plain strings — no .value dance needed.
+    # (The reversed comparison is deliberate: equality works in BOTH
+    # directions, which is why the Yoda-condition lint rule is silenced.)
     assert OrderStatus.PAID == "paid"
-    assert "paid" == OrderStatus.PAID
+    assert "paid" == OrderStatus.PAID  # noqa: SIM300
     print(f"  OrderStatus.PAID == 'paid'   -> {OrderStatus.PAID == 'paid'}")
 
     # Works in JSON-style serialisation.
@@ -367,9 +368,11 @@ def demo_decimal() -> None:
     print(f"  Decimal(1) / Decimal(3)        = {third}")
 
     # DON'T do: mixing Decimal and float.
-    # Decimal('0.1') + 0.2  raises TypeError in 3.11+.  Even without the
-    # TypeError, mixing reintroduces the float imprecision.  Keep the
-    # boundary clean: str/int -> Decimal at ingress, Decimal -> str at egress.
+    # Decimal('0.1') + 0.2  raises TypeError — and always has, on every
+    # Python 3: the two types refuse to mix in arithmetic.  (Comparisons
+    # like == are allowed, but compare exact values: Decimal('0.1') != 0.1.)
+    # Keep the boundary clean: str/int -> Decimal at ingress, Decimal -> str
+    # at egress.
     try:
         _ = Decimal("0.1") + 0.2
     except TypeError as exc:

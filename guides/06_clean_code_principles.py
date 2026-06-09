@@ -206,13 +206,12 @@ def add(a, b):
 
 
 # GOOD docstring: explains WHY, constraints, and edge cases.
-def retry(func, max_attempts=3, backoff_factor=2.0):
-    """Call *func* up to *max_attempts* times with exponential backoff.
+def retry(func, max_attempts=3):
+    """Call *func* up to *max_attempts* times, returning the first success.
 
     Args:
         func: A callable with no arguments; raises on failure.
         max_attempts: Total tries before giving up (default 3).
-        backoff_factor: Multiplier for wait time between retries.
 
     Returns:
         The return value of *func* on the first successful call.
@@ -221,7 +220,7 @@ def retry(func, max_attempts=3, backoff_factor=2.0):
         The exception from the final failed attempt.
     """
     last_exc = None
-    for attempt in range(max_attempts):
+    for _attempt in range(max_attempts):
         try:
             return func()
         except Exception as exc:

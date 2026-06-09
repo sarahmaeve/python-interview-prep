@@ -31,7 +31,7 @@ print(f"  buddy.name    = {buddy.name}")      # instance attr
 # Reassigning through an instance creates a NEW instance attribute that
 # shadows the class attribute -- it does NOT change the class attribute.
 buddy.species = "Canis lupus"
-print(f"  After buddy.species = 'Canis lupus':")
+print("  After buddy.species = 'Canis lupus':")
 print(f"    buddy.species = {buddy.species}")  # instance attr (shadow)
 print(f"    miles.species = {miles.species}")   # still the class attr
 print(f"    Dog.species   = {Dog.species}")     # unchanged
@@ -603,8 +603,10 @@ print(f"  auto() values          = {[s.value for s in Side]}")
 
 def next_status(s: OrderStatus) -> OrderStatus:
     match s:
-        case OrderStatus.PENDING:  return OrderStatus.PAID
-        case OrderStatus.PAID:     return OrderStatus.SHIPPED
+        case OrderStatus.PENDING:
+            return OrderStatus.PAID
+        case OrderStatus.PAID:
+            return OrderStatus.SHIPPED
         case OrderStatus.SHIPPED | OrderStatus.CANCELLED:
             return s
 

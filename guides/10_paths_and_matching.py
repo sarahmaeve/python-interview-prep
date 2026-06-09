@@ -34,7 +34,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import assert_never
 
-
 # ============================================================================
 # 1. pathlib BASICS AND THE WHY OF IT
 # ============================================================================
@@ -359,7 +358,8 @@ def demo_match_classes() -> None:
 
 
 @dataclass
-class Quit:  pass
+class Quit:
+    pass
 
 
 @dataclass

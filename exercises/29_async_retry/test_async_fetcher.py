@@ -7,7 +7,7 @@ test passes.
 import asyncio
 import time
 import unittest
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock
 
 from async_fetcher import (
     AsyncFetcher,

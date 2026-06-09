@@ -1,10 +1,10 @@
 """Correct tests for csv_report.py -- do NOT modify this file."""
 
-import unittest
-from unittest.mock import patch, mock_open, call, MagicMock
 import io
+import unittest
+from unittest.mock import mock_open, patch
 
-from csv_report import read_sales_data, calculate_totals, generate_report
+from csv_report import calculate_totals, generate_report, read_sales_data
 
 
 class TestReadSalesData(unittest.TestCase):

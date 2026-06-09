@@ -35,7 +35,7 @@ class TemperatureMonitor:
         self._readings: list[Reading] = []
 
     def record(self, celsius: float) -> Reading:
-        """Record a reading, return it, and return it."""
+        """Record a reading and return it."""
         reading = Reading(celsius=celsius)
         self._readings.append(reading)
         return reading

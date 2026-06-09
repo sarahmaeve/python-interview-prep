@@ -10,8 +10,8 @@ with its deployment environment (local vs CI, test vs production).
 import json
 import os
 import time
-from urllib.request import urlopen, Request
 from urllib.error import URLError
+from urllib.request import urlopen
 
 
 def get_config():

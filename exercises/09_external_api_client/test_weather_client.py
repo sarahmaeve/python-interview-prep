@@ -8,8 +8,7 @@ talks to external services.
 
 import json
 import unittest
-from io import BytesIO
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 from urllib.error import URLError
 
 from weather_client import WeatherClient

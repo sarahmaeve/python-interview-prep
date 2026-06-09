@@ -1,6 +1,6 @@
 import json
 import unittest
-from unittest.mock import MagicMock, patch, call
+from unittest.mock import MagicMock, call, patch
 
 from payment_processor import PaymentGateway, PaymentProcessor
 

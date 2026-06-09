@@ -17,13 +17,11 @@ import datetime
 import io
 import json
 import time
-from unittest.mock import MagicMock, patch, call, mock_open
 
 # NOTE: We use MagicMock (not plain Mock) throughout this guide.
 # MagicMock pre-configures dunder methods (__len__, __iter__, __enter__,
 # __exit__, etc.) so the mock works as a context manager, in len() calls,
 # and in iteration.  Plain Mock does not.  When in doubt, use MagicMock.
-
 # ---------------------------------------------------------------------------
 # Section 1: Why We Mock
 # ---------------------------------------------------------------------------
@@ -34,13 +32,12 @@ from unittest.mock import MagicMock, patch, call, mock_open
 #
 # Mocking replaces a real object with a fake that YOU control, so tests are
 # fast, reliable, and repeatable.
-
 # ---------------------------------------------------------------------------
 # Section 2: Hard-to-test code vs. testable code
 # ---------------------------------------------------------------------------
 # HARD TO TEST -- the HTTP call is buried inside the function.
-
 import urllib.request
+from unittest.mock import MagicMock, call, mock_open, patch
 
 
 def get_user_email_hard(user_id):
@@ -257,7 +254,7 @@ def utcnow():
     in Python 3.12 because it returns a *naive* datetime despite the name.
     Always pass tz=datetime.timezone.utc explicitly.
     """
-    return datetime.datetime.now(datetime.timezone.utc)
+    return datetime.datetime.now(datetime.UTC)
 
 
 def is_business_hours():
@@ -273,14 +270,14 @@ def demo_mock_datetime():
 
     # 6a: During business hours.
     fake_morning = datetime.datetime(2026, 3, 25, 10, 30, 0,
-                                     tzinfo=datetime.timezone.utc)
+                                     tzinfo=datetime.UTC)
     with patch(f"{__name__}.utcnow", return_value=fake_morning):
         assert is_business_hours() is True
     print("  PASS: 10:30 UTC -> business hours")
 
     # 6b: Outside business hours.
     fake_night = datetime.datetime(2026, 3, 25, 22, 0, 0,
-                                   tzinfo=datetime.timezone.utc)
+                                   tzinfo=datetime.UTC)
     with patch(f"{__name__}.utcnow", return_value=fake_night):
         assert is_business_hours() is False
     print("  PASS: 22:00 UTC -> NOT business hours\n")
@@ -481,7 +478,7 @@ def parse_csv_simple(filepath):
         return []
     headers = lines[0].split(",")
     return [
-        dict(zip(headers, row.split(",")))
+        dict(zip(headers, row.split(","), strict=True))
         for row in lines[1:]
     ]
 
@@ -508,7 +505,7 @@ def demo_mock_open():
     written = "".join(c.args[0] for c in handle.write.call_args_list)
     assert "name=Alice" in written
     assert "score=95" in written
-    print(f"  PASS: write_report wrote expected content")
+    print("  PASS: write_report wrote expected content")
 
     # 10c: Mocking CSV parsing -- read_data supplies the full text.
     csv_text = "name,age\nAlice,30\nBob,25\n"

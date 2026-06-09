@@ -8,7 +8,6 @@ import unittest
 
 from decorators import count_calls, log_calls, retry
 
-
 # ---------------------------------------------------------------------------
 # @log_calls — tests introspection survives the wrap.
 # ---------------------------------------------------------------------------

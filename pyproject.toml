@@ -103,12 +103,33 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-# Guides print everywhere; that's the whole point.
-"guides/*" = ["T201"]
-# Debug exercises have deliberate smells.
+# Guides print everywhere (T201), and they import at the section where a
+# topic is taught rather than at the top of the file (E402) — both are
+# deliberate teaching structure.
+"guides/*" = ["T201", "E402"]
+# Guide 04 demonstrates error paths where an assignment never completes or
+# is never reached again — those "unused variables" are the lesson.
+"guides/04_debugging_strategies.py" = ["F841"]
+
+# Debug exercise sources have deliberate smells.  NOTE: ruff takes the
+# UNION of per-file-ignores across matching patterns, so these ignores
+# apply to the exercise test files too — a narrower test-file entry cannot
+# re-enable them.
 "exercises/**/*.py" = ["UP", "B", "SIM"]
-# Except the test files — we want those to lint cleanly.
-"exercises/**/test_*.py" = []
+
+# Planted bugs and hints that lint correctly flags — named individually so
+# accidental new smells elsewhere still fail the lint gate.
+"exercises/05_test_interpretation/user_validator.py" = ["E722"]  # the bare except IS a bug
+"exercises/07_exception_handling/config_parser.py" = ["E722"]    # the bare except IS a bug
+"exercises/08_iteration_mutation/task_manager.py" = ["F401"]     # unused import is the hint for the date fix
+"exercises/11_file_processing/csv_report.py" = ["F841"]          # part of the deliberately smelly code
+
+# These test files import names the learner needs for their own solutions;
+# they're unused until the exercise is completed.
+"exercises/15_write_mocks/test_payment_processor.py" = ["F401"]
+"exercises/16_fix_test_mocks/test_inventory_service.py" = ["F401"]
+"exercises/19_write_tests_mocking/test_order_service.py" = ["F401"]
+"exercises/30_pytest_translation/test_temperature_monitor.py" = ["F401"]
 
 [tool.ruff.format]
 quote-style = "double"

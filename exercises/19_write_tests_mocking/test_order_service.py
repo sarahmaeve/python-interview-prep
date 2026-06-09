@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import MagicMock, patch
 
-from order_service import OrderService, PaymentClient, InventoryClient
+from order_service import InventoryClient, OrderService, PaymentClient
 
 
 class TestPlaceOrder(unittest.TestCase):

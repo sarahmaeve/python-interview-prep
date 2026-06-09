@@ -21,6 +21,9 @@ TABLE OF CONTENTS
   4. setUpClass / tearDownClass        (line ~215)
   5. Reading test output               (line ~250)
   6. Running tests & organization      (line ~285)
+  7. subTest — table-driven testing    (line ~345)
+  8. assertRaisesRegex                 (line ~370)
+  9. Pytest translation cheat sheet    (line ~395)
 """
 
 import unittest

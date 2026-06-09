@@ -7,8 +7,7 @@ Do NOT modify this file. Fix the bugs in service_client.py.
 
 import json
 import unittest
-from io import BytesIO
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 from urllib.error import URLError
 
 # We must reload the module in some tests to check import-time behavior,

@@ -1,5 +1,6 @@
 import unittest
-from shopping_cart import calculate_total, apply_discount, format_receipt
+
+from shopping_cart import apply_discount, calculate_total, format_receipt
 
 
 class TestCalculateTotal(unittest.TestCase):

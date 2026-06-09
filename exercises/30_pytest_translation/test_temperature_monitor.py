@@ -20,9 +20,7 @@ Translation cheat sheet (see guides/03_unittest_fundamentals.py Section 9):
 """
 
 import pytest
-
 from temperature_monitor import Reading, TemperatureMonitor
-
 
 # ---------------------------------------------------------------------------
 # CONSTRUCTION

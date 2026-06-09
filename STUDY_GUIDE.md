@@ -4,7 +4,9 @@ This document helps you prioritize based on how much time you have before the in
 
 ## If You Have 2 Hours
 
-Skip the guides. Go straight to exercises and learn by doing.
+Skip the guides. Go straight to exercises and learn by doing. (Each
+30-minute slot is a budget that includes reading the solution afterwards —
+the raw completion estimates in TIME_ESTIMATES.md are shorter.)
 
 1. **Exercise 05 — User Validator** (30 min) — Practice reading tests as a specification and fixing validation bugs. This directly mirrors the interview format.
 2. **Exercise 08 — Task Manager** (30 min) — Three subtle bugs (iteration mutation, date comparison, generator exhaustion) that require careful reasoning.

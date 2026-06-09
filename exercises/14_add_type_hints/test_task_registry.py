@@ -7,7 +7,6 @@ import unittest
 
 from task_registry import Task, TaskRegistry
 
-
 # ---------------------------------------------------------------------------
 # Helpers for annotation comparison
 # ---------------------------------------------------------------------------

@@ -1,4 +1,5 @@
 import unittest
+
 from text_formatter import title_case, truncate, word_wrap
 
 

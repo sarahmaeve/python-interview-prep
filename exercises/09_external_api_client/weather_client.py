@@ -9,8 +9,8 @@ Fix the bugs until all tests pass. Do not modify the test file.
 """
 
 import json
-from urllib.request import urlopen
 from urllib.error import URLError
+from urllib.request import urlopen
 
 
 class WeatherClient:

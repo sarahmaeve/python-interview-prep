@@ -55,7 +55,7 @@ Use this to compare against your actual times when testing the material.
 | # | Exercise | Bugs | Format | Est. Time | Difficulty Drivers |
 |---|----------|------|--------|-----------|-------------------|
 | 23 | Dataclass Refactor | 4 | Fix impl | 20 min | frozen/default_factory/compare=False; replace() vs in-place mutation |
-| 24 | Money and Decimal | 3 | Fix impl | 15 min | Float-Decimal mixing (3.11 raises); banker's vs commercial rounding |
+| 24 | Money and Decimal | 3 | Fix impl | 15 min | Float-Decimal mixing raises TypeError; banker's vs commercial rounding |
 | 25 | Enum State Machine | 3 | Fix impl | 15 min | Typo hunting across three locations; StrEnum refactor discussion |
 | 26 | pathlib Bugs | 3 | Fix impl | 20 min | Compound suffixes; `.parent` vs path; `rglob` vs `glob` |
 | 27 | match/case Dispatch | 3 | Fix impl | 15 min | Mapping-pattern binding; silent None fallthrough; assert_never discussion |

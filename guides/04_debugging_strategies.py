@@ -85,7 +85,7 @@ def case_study_traceback():
     total = sum(item.get("price", item.get("cost", 0)) for item in items)
     print(f"  Items: {items}")
     print(f"  Total (after fix): {total}")
-    print(f"  Lesson: When you see KeyError, check what keys actually exist.\n")
+    print("  Lesson: When you see KeyError, check what keys actually exist.\n")
 
 
 # ============================================================================
@@ -106,7 +106,7 @@ def case_study_common_errors():
         result = "age: " + 25  # Can't concatenate str and int
     except TypeError as e:
         print(f"  TypeError: {e}")
-        print(f"    Fix: use f-string or str(25)\n")
+        print("    Fix: use f-string or str(25)\n")
 
     # --- AttributeError ---
     # "That object doesn't have this attribute/method."
@@ -117,7 +117,7 @@ def case_study_common_errors():
         result.append(1)  # None has no .append()
     except AttributeError as e:
         print(f"  AttributeError: {e}")
-        print(f"    Fix: check why the variable is None — missing return?\n")
+        print("    Fix: check why the variable is None — missing return?\n")
 
     # --- KeyError ---
     # "That key doesn't exist in the dict."
@@ -126,7 +126,7 @@ def case_study_common_errors():
         port = config["port"]
     except KeyError as e:
         print(f"  KeyError: {e}")
-        print(f"    Fix: use .get('port', default) or add the key\n")
+        print("    Fix: use .get('port', default) or add the key\n")
 
     # --- ValueError ---
     # "The type is right, but the value is wrong."
@@ -134,7 +134,7 @@ def case_study_common_errors():
         number = int("twelve")
     except ValueError as e:
         print(f"  ValueError: {e}")
-        print(f"    Fix: validate input before converting\n")
+        print("    Fix: validate input before converting\n")
 
     # --- IndexError ---
     # "That index is out of range."
@@ -143,7 +143,7 @@ def case_study_common_errors():
         third = names[2]
     except IndexError as e:
         print(f"  IndexError: {e}")
-        print(f"    Fix: check len() before indexing, or use try/except\n")
+        print("    Fix: check len() before indexing, or use try/except\n")
 
 
 # ============================================================================
@@ -240,8 +240,8 @@ def case_study_print_debugging():
 
 def case_study_logging_exceptions():
     """Show the right way to log an exception with its traceback."""
-    import logging
     import io
+    import logging
     import traceback
 
     print("=" * 60)
@@ -317,9 +317,9 @@ def case_study_assert_checks():
 
     # This would trigger the assert (uncomment to see):
     #   apply_discount(80, 150)  → AssertionError: Discount must be 0-100, got 150
-    print(f"  Asserts catch bad inputs before they cause silent wrong answers.")
-    print(f"  NOTE: Don't use assert for user input validation in production —")
-    print(f"  assert is disabled when Python runs with -O (optimize).\n")
+    print("  Asserts catch bad inputs before they cause silent wrong answers.")
+    print("  NOTE: Don't use assert for user input validation in production —")
+    print("  assert is disabled when Python runs with -O (optimize).\n")
 
 
 # ============================================================================
@@ -355,10 +355,14 @@ def case_study_binary_search_debugging():
 
         # Step 3: Assign letter grades
         def to_grade(n):
-            if n >= 90: return "A"
-            if n >= 80: return "B"
-            if n >= 70: return "C"
-            if n >= 60: return "D"
+            if n >= 90:
+                return "A"
+            if n >= 80:
+                return "B"
+            if n >= 70:
+                return "C"
+            if n >= 60:
+                return "D"
             return "F"
 
         return [(n, to_grade(n)) for n in normalized]
@@ -367,8 +371,8 @@ def case_study_binary_search_debugging():
     result = process_scores(raw)
     print(f"  Input:  {raw}")
     print(f"  Output: {result}")
-    print(f"  Debugging approach: check `valid` after Step 1, then `normalized`")
-    print(f"  after Step 2.  Whichever step first shows wrong data has the bug.\n")
+    print("  Debugging approach: check `valid` after Step 1, then `normalized`")
+    print("  after Step 2.  Whichever step first shows wrong data has the bug.\n")
 
 
 # ============================================================================
@@ -472,14 +476,14 @@ def case_study_intermittent_bugs():
     b = 0.3
     print(f"  Float comparison: 0.1 + 0.2 == 0.3? → {a == b}")
     print(f"    0.1 + 0.2 is actually {a!r}")
-    print(f"    Fix: use math.isclose(a, b) or assertAlmostEqual in tests")
+    print("    Fix: use math.isclose(a, b) or assertAlmostEqual in tests")
 
     # --- 4. Shared mutable state between tests ---
     # This one is demonstrated in 03_unittest_fundamentals.py.
     # If tests share a class-level list and mutate it, the outcome depends
     # on execution order — which unittest does NOT guarantee.
-    print(f"  Shared state: if tests mutate a class-level list, order matters.")
-    print(f"    Fix: create fresh state in setUp(), never mutate shared fixtures.\n")
+    print("  Shared state: if tests mutate a class-level list, order matters.")
+    print("    Fix: create fresh state in setUp(), never mutate shared fixtures.\n")
 
 
 # ============================================================================

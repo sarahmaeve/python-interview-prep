@@ -40,7 +40,6 @@ from collections.abc import Callable, Iterator
 from contextlib import ExitStack, contextmanager, suppress
 from typing import Any, TypeVar
 
-
 # ============================================================================
 # 1. THE CONTEXT MANAGER PROTOCOL
 # ============================================================================
@@ -67,7 +66,7 @@ def demo_protocol() -> None:
         def __init__(self, label: str) -> None:
             self.label = label
 
-        def __enter__(self) -> "Tracer":
+        def __enter__(self) -> Tracer:
             print(f"  [enter] {self.label}")
             return self
 
@@ -114,7 +113,7 @@ class FileTimer:
         self.start: float | None = None
         self.elapsed: float = 0.0
 
-    def __enter__(self) -> "FileTimer":
+    def __enter__(self) -> FileTimer:
         self.start = time.perf_counter()
         return self
 
@@ -216,18 +215,19 @@ def demo_contextmanager_decorator() -> None:
 
 
 def demo_suppress_and_exitstack() -> None:
+    import tempfile
+    from pathlib import Path
+
     print("=" * 60)
     print("4. contextlib.suppress and ExitStack")
     print("=" * 60)
 
     # suppress: eats the exception type(s) you name.
     with suppress(FileNotFoundError):
-        open("/no/such/file").read()
+        Path("/no/such/file").read_text()
     print("  FileNotFoundError suppressed — no exception propagated")
 
     # ExitStack: open N things dynamically, clean them all up.
-    import tempfile
-    from pathlib import Path
 
     with tempfile.TemporaryDirectory() as td:
         paths = [Path(td) / f"file_{i}.txt" for i in range(3)]

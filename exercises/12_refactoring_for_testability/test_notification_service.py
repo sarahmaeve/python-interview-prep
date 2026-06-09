@@ -1,10 +1,10 @@
 """Correct tests for notification_service.py -- do NOT modify this file."""
 
-import unittest
-from unittest.mock import MagicMock, patch
 import datetime
+import unittest
+from unittest.mock import MagicMock
 
-from notification_service import NotificationService, SmtpClient, SmsGateway
+from notification_service import NotificationService, SmsGateway, SmtpClient
 
 
 class TestSendEmail(unittest.TestCase):

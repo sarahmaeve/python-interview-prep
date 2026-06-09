@@ -21,14 +21,10 @@ TABLE OF CONTENTS
 """
 
 import io
-import json
 import logging
 import os
-import time
 import unittest
-from unittest.mock import patch
 from urllib.error import URLError
-
 
 # ============================================================================
 # 1. PYTHON LOGGING BASICS
@@ -215,8 +211,8 @@ def demo_handlers_and_formatters():
     child_logger.warning("slow query detected")
 
     parent_output = parent_stream.getvalue()
-    print(f"\n    Child logger 'demo.app.database' logged a warning.")
-    print(f"    Parent logger 'demo.app' received it via propagation:")
+    print("\n    Child logger 'demo.app.database' logged a warning.")
+    print("    Parent logger 'demo.app' received it via propagation:")
     print(f"      {parent_output.strip()}")
 
     # Clean up
@@ -300,7 +296,7 @@ def demo_instrumenting_code():
     print("  AFTER (with logging):")
     print(output)
     print(f"    Result: {result}")
-    print(f"    Expected: 75.0 (100 - 25% discount)")
+    print("    Expected: 75.0 (100 - 25% discount)")
     print(f"    Actual:   {result} <- the log shows price * discount, not price * (1-discount)")
 
     logger.handlers.clear()
@@ -363,9 +359,9 @@ def demo_assert_logs():
             #     process_value(42)
 
             # Compatible approach for Python 3.8+:
-            with self.assertRaises(AssertionError):
-                with self.assertLogs("processor", level="WARNING"):
-                    process_value(42)
+            with self.assertRaises(AssertionError), \
+                    self.assertLogs("processor", level="WARNING"):
+                process_value(42)
 
     # Run the tests programmatically for the demo
     suite = unittest.TestLoader().loadTestsFromTestCase(TestProcessValue)

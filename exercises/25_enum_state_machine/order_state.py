@@ -20,7 +20,6 @@ Relevant reading:
 
 from dataclasses import dataclass, field
 
-
 # ---------------------------------------------------------------------------
 # Status strings.
 #

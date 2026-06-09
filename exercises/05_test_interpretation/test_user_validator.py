@@ -1,5 +1,6 @@
 import unittest
-from user_validator import validate_email, validate_password, validate_username, validate_user
+
+from user_validator import validate_email, validate_password, validate_user, validate_username
 
 
 class TestValidateEmail(unittest.TestCase):

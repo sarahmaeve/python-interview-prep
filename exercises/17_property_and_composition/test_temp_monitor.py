@@ -8,7 +8,6 @@ import unittest
 
 from temp_monitor import MonitoringStation, TemperatureSensor
 
-
 # ---------------------------------------------------------------------------
 # TemperatureSensor tests
 # ---------------------------------------------------------------------------

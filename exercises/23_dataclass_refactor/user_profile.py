@@ -15,7 +15,6 @@ Everything you need is covered in:
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 
-
 # ---------------------------------------------------------------------------
 # A UserProfile is a VALUE OBJECT.  Callers treat it as immutable: two
 # profiles with identical fields are interchangeable, and nobody should

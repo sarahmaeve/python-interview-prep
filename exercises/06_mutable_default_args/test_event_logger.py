@@ -1,4 +1,5 @@
 import unittest
+
 from event_logger import Event, EventLogger
 
 

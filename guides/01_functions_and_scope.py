@@ -180,7 +180,9 @@ print(f"  triple(5) = {triple(5)}")   # 15
 
 functions = []
 for i in range(4):
-    functions.append(lambda: i)     # all lambdas share the same 'i'
+    # Even ruff's bugbear rule (B023) flags this line — suppressed here
+    # because this buggy capture is exactly what we're demonstrating.
+    functions.append(lambda: i)  # noqa: B023
 
 # CHALLENGE: What does this print?
 print(f"  Late binding: {[f() for f in functions]}")
