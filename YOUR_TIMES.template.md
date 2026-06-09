@@ -38,4 +38,5 @@ as you work through the exercises. Comparing to the estimates in
 | 30 | Pytest Translation       | 20 min | | | |
 | 31 | Decorator @wraps         | 15 min | | | |
 | 32 | Thread Safety            | 25 min | | | |
-| | **Total** | **~565 min (~9.5 hrs)** | | | |
+| 33 | Capstone: Order Pipeline | 45 min | | | |
+| | **Total** | **~610 min (~10 hrs)** | | | |

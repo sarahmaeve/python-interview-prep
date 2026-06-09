@@ -70,6 +70,12 @@ Use this to compare against your actual times when testing the material.
 |---|----------|------|--------|-----------|-------------------|
 | 32 | Thread Safety | 3 | Fix impl | 25 min | Reasoning about interleavings; check-then-act; lock hygiene on error paths |
 
+## Capstone
+
+| # | Exercise | Bugs | Format | Est. Time | Difficulty Drivers |
+|---|----------|------|--------|-----------|-------------------|
+| 33 | Order Pipeline | 5 | Fix 5 modules | 45 min | Five modules to read first; two failures point at the wrong module; bugs echo exercises 05/06/07/11/25 |
+
 ## Summary by Time
 
 | Time | Exercises |
@@ -79,6 +85,7 @@ Use this to compare against your actual times when testing the material.
 | 20 min | 05, 06, 07, 08, 19, 20, 23, 26, 28, 30 |
 | 25 min | 09, 10, 11, 21, 22, 29, 32 |
 | 30 min | 12 |
+| 45 min | 33 |
 
 ## Notes
 
@@ -95,4 +102,4 @@ Copy `YOUR_TIMES.template.md` to `YOUR_TIMES.md` (gitignored) and fill in your a
 times alongside the estimates. Comparing over several sessions tells you where your
 weak spots are — which is the whole point of this repo.
 
-**Total estimated time for all 32 exercises: ~565 min (~9.5 hrs)**
+**Total estimated time for all 33 exercises: ~610 min (~10 hrs)**

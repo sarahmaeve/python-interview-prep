@@ -182,3 +182,9 @@ After attempting an exercise, check `solutions/` for a walkthrough of the diagno
 | # | Exercise | Topic Areas | Goal |
 |---|----------|-------------|------|
 | 32 | Thread Safety | `threading.Lock`, check-then-act races, lock hygiene, the GIL myth | Fix 3 concurrency bugs in a shared ticket office |
+
+### Capstone (multi-module)
+
+| # | Exercise | Topic Areas | Goal |
+|---|----------|-------------|------|
+| 33 | Order Pipeline | Navigating multi-module code; symptoms far from causes | Fix 5 bugs spread across 5 modules of a small order app |
