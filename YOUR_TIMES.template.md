@@ -39,4 +39,5 @@ as you work through the exercises. Comparing to the estimates in
 | 31 | Decorator @wraps         | 15 min | | | |
 | 32 | Thread Safety            | 25 min | | | |
 | 33 | Capstone: Order Pipeline | 45 min | | | |
-| | **Total** | **~610 min (~10 hrs)** | | | |
+| 34 | Flaky Tests              | 25 min | | | |
+| | **Total** | **~635 min (~10.5 hrs)** | | | |

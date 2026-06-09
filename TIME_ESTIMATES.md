@@ -76,6 +76,12 @@ Use this to compare against your actual times when testing the material.
 |---|----------|------|--------|-----------|-------------------|
 | 33 | Order Pipeline | 5 | Fix 5 modules | 45 min | Five modules to read first; two failures point at the wrong module; bugs echo exercises 05/06/07/11/25 |
 
+## Test Reliability
+
+| # | Exercise | Bugs | Format | Est. Time | Difficulty Drivers |
+|---|----------|------|--------|-----------|-------------------|
+| 34 | Flaky Tests | 4 | Fix tests | 25 min | Diagnose always-vs-sometimes failures; four distinct nondeterminism sources |
+
 ## Summary by Time
 
 | Time | Exercises |
@@ -83,7 +89,7 @@ Use this to compare against your actual times when testing the material.
 | 10 min | 01, 14, 18 |
 | 15 min | 02, 03, 04, 13, 15, 16, 17, 24, 25, 27, 31 |
 | 20 min | 05, 06, 07, 08, 19, 20, 23, 26, 28, 30 |
-| 25 min | 09, 10, 11, 21, 22, 29, 32 |
+| 25 min | 09, 10, 11, 21, 22, 29, 32, 34 |
 | 30 min | 12 |
 | 45 min | 33 |
 
@@ -102,4 +108,4 @@ Copy `YOUR_TIMES.template.md` to `YOUR_TIMES.md` (gitignored) and fill in your a
 times alongside the estimates. Comparing over several sessions tells you where your
 weak spots are — which is the whole point of this repo.
 
-**Total estimated time for all 33 exercises: ~610 min (~10 hrs)**
+**Total estimated time for all 34 exercises: ~635 min (~10.5 hrs)**

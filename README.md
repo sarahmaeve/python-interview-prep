@@ -188,3 +188,9 @@ After attempting an exercise, check `solutions/` for a walkthrough of the diagno
 | # | Exercise | Topic Areas | Goal |
 |---|----------|-------------|------|
 | 33 | Order Pipeline | Navigating multi-module code; symptoms far from causes | Fix 5 bugs spread across 5 modules of a small order app |
+
+### Test Reliability
+
+| # | Exercise | Topic Areas | Goal |
+|---|----------|-------------|------|
+| 34 | Flaky Tests | Unseeded randomness, hash ordering, real clocks, shared fixtures | Fix 4 flaky tests so the suite passes 10 runs in a row |
