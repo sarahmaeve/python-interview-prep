@@ -53,7 +53,7 @@ def demo_naming():
 # Section 2: Function length and single responsibility
 # ---
 # BEFORE: one function does validation, transformation, AND persistence.
-_saved_users = []  # pretend database
+_saved_users: list[dict] = []  # pretend database
 
 def handle_signup_before(name, email, age):
     if not name or len(name) < 2:           # validation
@@ -219,12 +219,13 @@ def retry(func, max_attempts=3):
     Raises:
         The exception from the final failed attempt.
     """
-    last_exc = None
+    last_exc: Exception | None = None
     for _attempt in range(max_attempts):
         try:
             return func()
         except Exception as exc:
             last_exc = exc
+    assert last_exc is not None
     raise last_exc
 
 

@@ -5,7 +5,7 @@
 #   make test-pytest   # same, via pytest (requires `pip install --group dev`)
 #   make test-guides   # run the guide files (they're self-verifying)
 #   make lint          # ruff check
-#   make typecheck     # mypy on guides + exercise 13/14 (which expect types)
+#   make typecheck     # mypy on guides + exercise 14 (add type hints)
 #   make check         # lint + typecheck + test (what CI runs)
 #
 # Single-exercise shortcuts:
@@ -45,8 +45,11 @@ lint:  ## ruff check
 format:  ## ruff format
 	@$(PY) -m ruff format .
 
-typecheck:  ## mypy — strict on guides, lenient on debug exercises
-	@$(PY) -m mypy guides exercises/14_add_type_hints exercises/17_property_and_composition
+typecheck:  ## mypy — guides + the add-type-hints exercise
+	@# Debug exercises (incl. 17) are excluded: their CORRECT tests are typed
+	@# against the FIXED implementation, so the committed buggy state can
+	@# never typecheck — that mismatch is the exercise.
+	@$(PY) -m mypy guides exercises/14_add_type_hints
 
 check: lint typecheck test-guides  ## What CI runs (guides only — exercises expect bugs)
 

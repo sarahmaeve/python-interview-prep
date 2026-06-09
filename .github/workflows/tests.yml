@@ -75,6 +75,8 @@ jobs:
         with:
           python-version: "3.11"
       - run: python -m pip install mypy
-      # Only guides and the type-focused exercises are checked strictly.
-      # Debug exercises contain intentional type errors.
-      - run: python -m mypy guides exercises/14_add_type_hints exercises/17_property_and_composition
+      # Only guides and the add-type-hints exercise are checked.  Debug
+      # exercises contain intentional type errors, and their CORRECT test
+      # files are typed against the FIXED implementations — the committed
+      # buggy state can never typecheck.
+      - run: python -m mypy guides exercises/14_add_type_hints

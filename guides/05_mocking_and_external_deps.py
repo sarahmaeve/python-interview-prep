@@ -94,7 +94,7 @@ def demo_dependency_injection():
 
 # Suppose this module-level name simulates an import like:
 #     from some_service import send_notification
-_notification_log = []
+_notification_log: list[tuple[str, str]] = []
 
 
 def send_notification(user, message):
@@ -199,7 +199,7 @@ def demo_side_effect():
 def fetch_with_retry(url, http_client, max_retries=3, delay=1.0):
     """Try up to *max_retries* times, sleeping *delay* seconds between
     attempts.  Returns the response on success, raises on final failure."""
-    last_exc = None
+    last_exc: Exception | None = None
     for attempt in range(max_retries):
         try:
             resp = http_client.get(url)
@@ -209,6 +209,7 @@ def fetch_with_retry(url, http_client, max_retries=3, delay=1.0):
             last_exc = exc
             if attempt < max_retries - 1:
                 time.sleep(delay)           # we will mock this out
+    assert last_exc is not None
     raise last_exc
 
 

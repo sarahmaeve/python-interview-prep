@@ -269,6 +269,10 @@ def demo_match_structural() -> None:
                 return f"move to ({x}, {y})"
             case [head, *tail]:
                 return f"{head} with tail {tail}"
+            case _:
+                # Unreachable for list input, but mypy can't prove sequence
+                # patterns exhaustive — make the fallback explicit.
+                raise AssertionError(f"unreachable: {cmd!r}")
 
     for cmd in [[], ["version"], ["help", "config", "syntax"], ["move", "3", "4"],
                 ["noop", "arg1", "arg2"]]:
@@ -286,7 +290,7 @@ def demo_match_structural() -> None:
             case _:
                 return "malformed event"
 
-    events = [
+    events: list[dict] = [
         {"type": "click", "x": 10, "y": 20, "button": "left"},
         {"type": "scroll", "delta": -5},
         {"type": "resize"},
@@ -337,8 +341,11 @@ def demo_match_classes() -> None:
             case Point3D(x=x, y=y, z=z):         # keyword destructuring
                 return f"3D point ({x}, {y}, {z})"
 
-    for p in [Point2D(0, 0), Point3D(0, 0, 0), Point2D(5, 5), Point2D(1, 2),
-              Point3D(1, 2, 3)]:
+    points: list[Point2D | Point3D] = [
+        Point2D(0, 0), Point3D(0, 0, 0), Point2D(5, 5), Point2D(1, 2),
+        Point3D(1, 2, 3),
+    ]
+    for p in points:
         print(f"  {p!s:40s} -> {describe(p)}")
     print()
 
@@ -396,7 +403,8 @@ def demo_exhaustiveness() -> None:
     print("8. Exhaustiveness with typing.assert_never")
     print("=" * 60)
 
-    for c in [Quit(), Move(3, 4), Say("hello")]:
+    commands: list[Command] = [Quit(), Move(3, 4), Say("hello")]
+    for c in commands:
         print(f"  {c!s:30s} -> {handle_command(c)}")
 
     print("""

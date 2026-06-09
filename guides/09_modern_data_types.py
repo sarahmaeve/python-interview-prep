@@ -374,7 +374,7 @@ def demo_decimal() -> None:
     # Keep the boundary clean: str/int -> Decimal at ingress, Decimal -> str
     # at egress.
     try:
-        _ = Decimal("0.1") + 0.2
+        _ = Decimal("0.1") + 0.2  # type: ignore[operator]  # the TypeError IS the demo
     except TypeError as exc:
         print(f"  Decimal + float               -> TypeError: {exc}")
     print()

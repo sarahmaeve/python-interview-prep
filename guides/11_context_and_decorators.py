@@ -38,7 +38,7 @@ import logging
 import time
 from collections.abc import Callable, Iterator
 from contextlib import ExitStack, contextmanager, suppress
-from typing import Any, TypeVar
+from typing import Any, Literal, TypeVar
 
 # ============================================================================
 # 1. THE CONTEXT MANAGER PROTOCOL
@@ -70,7 +70,9 @@ def demo_protocol() -> None:
             print(f"  [enter] {self.label}")
             return self
 
-        def __exit__(self, exc_type, exc_val, exc_tb) -> bool:
+        def __exit__(self, exc_type, exc_val, exc_tb) -> Literal[False]:
+            # Annotated Literal[False] so type checkers can prove we never
+            # swallow exceptions (returning True would).
             if exc_type is None:
                 print(f"  [exit]  {self.label}   (clean)")
             else:
@@ -117,7 +119,7 @@ class FileTimer:
         self.start = time.perf_counter()
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb) -> bool:
+    def __exit__(self, exc_type, exc_val, exc_tb) -> Literal[False]:
         assert self.start is not None
         self.elapsed = time.perf_counter() - self.start
         # Always record the elapsed time, even if the block raised.
@@ -449,9 +451,9 @@ def demo_class_decorator() -> None:
     greet("grace")
     greet("hopper")
     # The decorator *is* the callable now — state lives on it.
-    assert greet.count == 3  # type: ignore[attr-defined]
+    assert greet.count == 3
     print(f"  greet.count = {greet.count}")
-    print(f"  greet.__name__ = {greet.__name__!r}   (via update_wrapper)")
+    print(f"  greet.__name__ = {greet.__name__!r}   (via update_wrapper)")  # type: ignore[attr-defined]
     print()
 
 

@@ -89,7 +89,7 @@ class TaskRegistry:
         Unassigned tasks (assignee is None) are grouped under the key
         'unassigned'.
         """
-        result = {}
+        result: dict[str, int] = {}
         for task in self._tasks.values():
             if task.completed:
                 continue

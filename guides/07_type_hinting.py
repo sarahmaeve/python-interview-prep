@@ -69,7 +69,7 @@ log_message("Type hints do NOT enforce types at runtime.")
 
 # CHALLENGE: add("hello", "world") -- Python returns "helloworld" (concat).
 # But mypy flags: incompatible type "str"; expected "int".
-print(f"  add('hello', 'world') = {add('hello', 'world')}  # runs fine!")
+print(f"  add('hello', 'world') = {add('hello', 'world')}  # runs fine!")  # type: ignore[arg-type]
 print()
 
 # ===========================================================================
@@ -380,7 +380,7 @@ print()
 # --- Pitfall B: Forgetting to return (implicit None) ---
 # Annotated -> str but one branch has no return -- Python returns None.
 
-def classify_age(age: int) -> str:
+def classify_age(age: int) -> str:  # type: ignore[return]  # the missing return IS the demo
     """Return 'child', 'teen', or 'adult'.  But there is a bug..."""
     if age < 13:
         return "child"

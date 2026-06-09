@@ -46,7 +46,7 @@ print()
 # through one instance affects every other instance.
 
 class StudentBroken:
-    grades = []                   # shared mutable -- every instance sees this
+    grades: list[int] = []        # shared mutable -- every instance sees this
 
     def __init__(self, name):
         self.name = name
@@ -459,7 +459,7 @@ print("=== 9. @dataclass ===")
 
 
 @dataclass
-class Point:
+class Point:  # type: ignore[no-redef]  # deliberately reuses §4's name
     """A 2-D point.  __init__, __repr__, and __eq__ are auto-generated."""
     x: float
     y: float
@@ -520,8 +520,8 @@ class EmailTemplate:
 
 
 # EmailTemplate("Hi", "Body")   # TypeError — positional not allowed
-t = EmailTemplate(subject="Hi", body="Body")
-print(f"  kw_only dataclass: {t}")
+tmpl = EmailTemplate(subject="Hi", body="Body")
+print(f"  kw_only dataclass: {tmpl}")
 
 # --- slots=True (3.10+) ---
 # Adds __slots__ for memory efficiency and to prevent accidental attribute
@@ -542,8 +542,8 @@ except AttributeError as e:
 
 # --- replace(): create a modified copy ---
 # The idiomatic way to "mutate" a frozen dataclass is to produce a new one.
-c2 = replace(c, lat=40.0)
-print(f"  replace(c, lat=40.0)    = {c2}")
+moved = replace(c, lat=40.0)
+print(f"  replace(c, lat=40.0)    = {moved}")
 print("  RULE: reach for @dataclass first; only write __init__ by hand when")
 print("  you need behavior dataclasses don't give you.\n")
 
@@ -583,9 +583,9 @@ class OrderStatus(StrEnum):
     CANCELLED = "cancelled"
 
 
-s = OrderStatus.PAID
-print(f"  OrderStatus.PAID       = {s}            (is equal to 'paid': {s == 'paid'})")
-print(f"  json.dumps serializes  = {s.value!r}")
+status = OrderStatus.PAID
+print(f"  OrderStatus.PAID       = {status}            (is equal to 'paid': {status == 'paid'})")
+print(f"  json.dumps serializes  = {status.value!r}")
 
 # auto() lets you skip the values when they don't matter.
 
@@ -647,10 +647,10 @@ class DatasetStats:
         return sum(self._values)
 
 
-d = DatasetStats([1.0, 2.0, 3.0, 4.0])
-print(f"  d.mean  = {d.mean}   (first access — computes)")
-print(f"  d.mean  = {d.mean}   (second access — cached, no recompute)")
-print(f"  d.total = {d.total}")
+stats = DatasetStats([1.0, 2.0, 3.0, 4.0])
+print(f"  stats.mean  = {stats.mean}   (first access — computes)")
+print(f"  stats.mean  = {stats.mean}   (second access — cached, no recompute)")
+print(f"  stats.total = {stats.total}")
 
 # Gotcha: @cached_property writes to self.__dict__.  If __slots__ is in use
 # WITHOUT including the attribute, the write fails with AttributeError.

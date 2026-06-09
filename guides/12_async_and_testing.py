@@ -123,11 +123,13 @@ def demo_await_and_run() -> None:
 
 async def fetch_concurrent_gather() -> list[str]:
     # All tasks run concurrently.  Total: max of delays, not sum.
-    return await asyncio.gather(
+    # (gather returns a list at runtime; list() keeps mypy's fixed-arity
+    # tuple type in line with our annotation.)
+    return list(await asyncio.gather(
         fetch_one("a", 0.02),
         fetch_one("b", 0.02),
         fetch_one("c", 0.02),
-    )
+    ))
 
 
 async def fetch_concurrent_taskgroup() -> list[str]:

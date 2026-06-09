@@ -23,6 +23,7 @@ TABLE OF CONTENTS
   8. The "it works sometimes" checklist      (line ~290)
 """
 
+from typing import Any
 
 # ============================================================================
 # 1. THE SYSTEMATIC DEBUGGING WORKFLOW
@@ -70,7 +71,7 @@ def case_study_traceback():
     print("CASE STUDY: Reading a traceback")
     print("=" * 60)
 
-    items = [
+    items: list[dict[str, Any]] = [
         {"name": "Widget", "price": 9.99},
         {"name": "Gadget", "cost": 14.99},   # BUG: wrong key name
     ]
@@ -103,7 +104,7 @@ def case_study_common_errors():
     # Common triggers: calling a non-callable, wrong argument count,
     # concatenating str + int, passing None where a sequence is expected.
     try:
-        result = "age: " + 25  # Can't concatenate str and int
+        result = "age: " + 25  # type: ignore[operator]  # the TypeError IS the demo
     except TypeError as e:
         print(f"  TypeError: {e}")
         print("    Fix: use f-string or str(25)\n")
@@ -114,7 +115,7 @@ def case_study_common_errors():
     # frequently None from a function that returned nothing.
     try:
         result = None
-        result.append(1)  # None has no .append()
+        result.append(1)  # type: ignore[attr-defined]  # the AttributeError IS the demo
     except AttributeError as e:
         print(f"  AttributeError: {e}")
         print("    Fix: check why the variable is None — missing return?\n")

@@ -27,6 +27,7 @@ TABLE OF CONTENTS
 """
 
 import unittest
+from typing import Any, ClassVar
 
 # ============================================================================
 # 1. ANATOMY OF A TEST CASE
@@ -146,7 +147,8 @@ class TestAssertionMethods(unittest.TestCase):
         self.assertIsInstance("hi", str)
 
     def test_assert_is_none(self):
-        result = {}.get("missing_key")
+        data: dict[str, str] = {}
+        result = data.get("missing_key")
         self.assertIsNone(result)           # Preferred over assertEqual(x, None)
         self.assertIsNotNone("something")
 
@@ -180,14 +182,14 @@ class TestBankAccount(unittest.TestCase):
         # This runs before EVERY test.  Each test gets its own account.
         # If one test modifies self.account, the next test won't see it
         # because setUp creates a brand-new dict.
-        self.account = {"owner": "Alice", "balance": 100.0}
+        self.account: dict[str, Any] = {"owner": "Alice", "balance": 100.0}
 
     def tearDown(self):
         # This runs after EVERY test, even if the test raised an exception.
         # Use it for cleanup: closing files, dropping temp database tables,
         # resetting global state, etc.
         # Here there's nothing to clean up, but we include it for illustration.
-        self.account = None
+        self.account.clear()
 
     def test_deposit(self):
         self.account["balance"] += 50
@@ -222,6 +224,8 @@ class TestBankAccount(unittest.TestCase):
 class TestWithClassLevelSetup(unittest.TestCase):
     """Demonstrates class-level setup for expensive shared fixtures."""
 
+    lookup_table: ClassVar[dict[str, int]]
+
     @classmethod
     def setUpClass(cls):
         # Runs ONCE before any tests in this class.  Use @classmethod.
@@ -231,7 +235,7 @@ class TestWithClassLevelSetup(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         # Runs ONCE after all tests in this class finish.
-        cls.lookup_table = None
+        del cls.lookup_table
 
     def test_lookup_a(self):
         self.assertEqual(self.lookup_table["A"], 1)

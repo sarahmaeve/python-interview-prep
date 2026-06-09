@@ -228,7 +228,7 @@ print(f"  original unchanged: {original}")   # [3, 1, 2]
 
 # CHALLENGE: What does this print?
 my_list = [4, 2, 7]
-chained = my_list.append(5)
+chained = my_list.append(5)  # type: ignore[func-returns-value]  # the None IS the lesson
 print(f"  chained = my_list.append(5) -> chained is {chained}")
 # ANSWER: None. The append happened, but the return value is None.
 print(f"  my_list is now: {my_list}")  # [4, 2, 7, 5]
