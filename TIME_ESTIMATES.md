@@ -74,7 +74,7 @@ Use this to compare against your actual times when testing the material.
 
 | # | Exercise | Bugs | Format | Est. Time | Difficulty Drivers |
 |---|----------|------|--------|-----------|-------------------|
-| 33 | Order Pipeline | 5 | Fix 5 modules | 45 min | Five modules to read first; two failures point at the wrong module; bugs echo exercises 05/06/07/11/25 |
+| 33 | Order Pipeline | 5 | Fix 5 modules | 45 min | Five modules to read first; two failures point at the wrong module; bugs echo earlier exercises |
 
 ## Test Reliability
 
@@ -86,7 +86,7 @@ Use this to compare against your actual times when testing the material.
 
 | # | Exercise | Bugs | Format | Est. Time | Difficulty Drivers |
 |---|----------|------|--------|-----------|-------------------|
-| 35 | Debugging with pdb | 3 | Fix impl | 25 min | Bugs chosen to resist reading (aliasing, indentation, slice); pdb session is the method |
+| 35 | Debugging with pdb | 3 | Fix impl | 25 min | Bugs chosen to resist reading; the pdb session is the method |
 
 ## Performance
 

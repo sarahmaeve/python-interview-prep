@@ -76,8 +76,8 @@ class TestPerformance(unittest.TestCase):
         self.assertLess(
             elapsed, BUDGET_SECONDS,
             f"running_averages took {elapsed:.2f}s for 30k latencies "
-            f"(budget {BUDGET_SECONDS}s) — the averages can be computed in "
-            "a single pass",
+            f"(budget {BUDGET_SECONDS}s) — the algorithm, not the machine, "
+            "is the problem",
         )
 
     def test_newest_first_scales(self):
@@ -88,8 +88,8 @@ class TestPerformance(unittest.TestCase):
         self.assertLess(
             elapsed, BUDGET_SECONDS,
             f"newest_first took {elapsed:.2f}s for 140k entries "
-            f"(budget {BUDGET_SECONDS}s) — think about what each insert "
-            "costs",
+            f"(budget {BUDGET_SECONDS}s) — the algorithm, not the machine, "
+            "is the problem",
         )
 
 

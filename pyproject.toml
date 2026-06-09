@@ -117,12 +117,13 @@ ignore = [
 # re-enable them.
 "exercises/**/*.py" = ["UP", "B", "SIM"]
 
-# Planted bugs and hints that lint correctly flags — named individually so
-# accidental new smells elsewhere still fail the lint gate.
-"exercises/05_test_interpretation/user_validator.py" = ["E722"]  # the bare except IS a bug
-"exercises/07_exception_handling/config_parser.py" = ["E722"]    # the bare except IS a bug
-"exercises/08_iteration_mutation/task_manager.py" = ["F401"]     # unused import is the hint for the date fix
-"exercises/11_file_processing/csv_report.py" = ["F841"]          # part of the deliberately smelly code
+# Deliberate parts of specific exercises that lint correctly flags — named
+# individually so accidental new smells elsewhere still fail the lint gate.
+# (Learners: reading this section spoils which files carry planted findings.)
+"exercises/05_test_interpretation/user_validator.py" = ["E722"]
+"exercises/07_exception_handling/config_parser.py" = ["E722"]
+"exercises/08_iteration_mutation/task_manager.py" = ["F401"]
+"exercises/11_file_processing/csv_report.py" = ["F841"]
 
 # These test files import names the learner needs for their own solutions;
 # they're unused until the exercise is completed.

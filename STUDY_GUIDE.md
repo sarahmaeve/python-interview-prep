@@ -126,7 +126,7 @@ Work through everything in order. The exercises are numbered by difficulty withi
 | 30 | Guide 03 (§9 pytest translation cheat sheet) |
 | 31 | Guide 11 (§5–8 decorators) |
 | 32 | Guide 11 (§1–4 — why `with` guarantees release) + the exercise README's threading primer |
-| 33 | None — it synthesizes exercises 05, 06, 07, 11, 25; attempt it after those |
+| 33 | None — it synthesizes patterns from earlier exercises; attempt it after the core sets (01–25) |
 | 34 | Guide 04 (§8 "it works sometimes" checklist) + Guide 05 (§6 mocking the clock) |
 | 35 | Guide 04 (workflow + breakpoint() tip) + the exercise README's pdb crash course |
 | 36 | None — the exercise README covers cProfile/timeit and the cost model |

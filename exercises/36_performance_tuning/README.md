@@ -60,6 +60,8 @@ For each slow function, ask of its loop body: "what does THIS line cost when the
 
 ## Discussion Questions
 
+Come back to these **after** the perf tests are green — they give fixes away.
+
 1. `unique_visitors` could be one line: `list(dict.fromkeys(visits))`. Why does that preserve first-seen order, and since when?
 2. If you genuinely need cheap insertion at both ends, which stdlib container is built for it? What does it give up in exchange?
 3. The budgets here are wall-clock seconds, which makes the tests machine-sensitive in principle. What would a *less* fragile way to assert "this is O(n), not O(n²)" look like? (Think: operation counting, or timing at n vs 2n.)

@@ -54,6 +54,8 @@ Categorize each failing test first: does it fail *always* or *sometimes*? The tw
 
 ## Discussion Questions
 
+Come back to these **after** the suite is green — they reference the fixes.
+
 1. The hash-order flake only reproduces across *processes*, never within one run. How would you reproduce it on demand? (Look up `PYTHONHASHSEED`.)
 2. Your CI retries failed jobs once, so this suite "passes" most days. What does that retry policy cost you in the long run?
 3. A teammate proposes seeding `random` globally in `setUpClass`. What's better about injecting the RNG through the constructor instead?

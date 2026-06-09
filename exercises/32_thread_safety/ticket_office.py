@@ -1,8 +1,8 @@
 """TicketOffice — a shared ticket pool sold from many threads at once.
 
 This class is shared across request-handler threads in a web service.
-It already owns a ``threading.Lock`` — but the lock isn't used everywhere
-it must be, and one method that does use it, uses it wrong.
+It already owns a ``threading.Lock`` — but it isn't being used correctly
+everywhere it needs to be.
 
 There are 3 bugs.  The tests in test_ticket_office.py describe the
 required behavior; the GIL does NOT make this code safe.
