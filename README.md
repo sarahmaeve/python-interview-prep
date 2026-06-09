@@ -200,3 +200,9 @@ After attempting an exercise, check `solutions/` for a walkthrough of the diagno
 | # | Exercise | Topic Areas | Goal |
 |---|----------|-------------|------|
 | 35 | Debugging with pdb | `breakpoint()`, stepping, post-mortem, aliasing bugs | Fix 3 bugs by stepping through the code, not reading it |
+
+### Performance
+
+| # | Exercise | Topic Areas | Goal |
+|---|----------|-------------|------|
+| 36 | Performance Tuning | Accidental O(n²), sets vs lists, accumulators, cProfile/timeit | Bring 3 correct-but-quadratic functions inside their time budgets |

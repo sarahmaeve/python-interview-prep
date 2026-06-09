@@ -41,4 +41,5 @@ as you work through the exercises. Comparing to the estimates in
 | 33 | Capstone: Order Pipeline | 45 min | | | |
 | 34 | Flaky Tests              | 25 min | | | |
 | 35 | Debugging with pdb       | 25 min | | | |
-| | **Total** | **~660 min (~11 hrs)** | | | |
+| 36 | Performance Tuning       | 20 min | | | |
+| | **Total** | **~680 min (~11.5 hrs)** | | | |

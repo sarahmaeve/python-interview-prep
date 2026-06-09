@@ -77,6 +77,7 @@ Work through everything in order. The exercises are numbered by difficulty withi
 - **33**: Capstone — five bugs across five modules; do this last
 - **34**: Flaky-test stabilization (randomness, hash order, clocks, fixtures)
 - **35**: Debugging with pdb (stepping, post-mortem, aliasing)
+- **36**: Performance tuning (accidental O(n²), profiling)
 
 ## Key Skills by Interview Area
 
@@ -98,6 +99,7 @@ Work through everything in order. The exercises are numbered by difficulty withi
 | Navigating multi-module codebases | 33 |
 | Flaky tests / determinism | 34 |
 | Live debugging (pdb) | 35 |
+| Performance / complexity | 36 |
 
 ## Guide-to-Exercise Prerequisites
 
@@ -127,3 +129,4 @@ Work through everything in order. The exercises are numbered by difficulty withi
 | 33 | None — it synthesizes exercises 05, 06, 07, 11, 25; attempt it after those |
 | 34 | Guide 04 (§8 "it works sometimes" checklist) + Guide 05 (§6 mocking the clock) |
 | 35 | Guide 04 (workflow + breakpoint() tip) + the exercise README's pdb crash course |
+| 36 | None — the exercise README covers cProfile/timeit and the cost model |
