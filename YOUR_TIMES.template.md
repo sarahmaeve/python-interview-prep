@@ -37,4 +37,5 @@ as you work through the exercises. Comparing to the estimates in
 | 29 | Async Retry              | 25 min | | | |
 | 30 | Pytest Translation       | 20 min | | | |
 | 31 | Decorator @wraps         | 15 min | | | |
-| | **Total** | **~540 min (~9 hrs)** | | | |
+| 32 | Thread Safety            | 25 min | | | |
+| | **Total** | **~565 min (~9.5 hrs)** | | | |

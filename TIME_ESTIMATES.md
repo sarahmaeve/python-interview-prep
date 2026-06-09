@@ -64,6 +64,12 @@ Use this to compare against your actual times when testing the material.
 | 30 | Pytest Translation | — | Write tests | 20 min | 14 tests to translate; fixtures, parametrize, pytest.raises |
 | 31 | Decorator `@wraps` | 3 | Fix impl | 15 min | Missing wraps; wraps on wrong target; class-level shared state |
 
+## Concurrency
+
+| # | Exercise | Bugs | Format | Est. Time | Difficulty Drivers |
+|---|----------|------|--------|-----------|-------------------|
+| 32 | Thread Safety | 3 | Fix impl | 25 min | Reasoning about interleavings; check-then-act; lock hygiene on error paths |
+
 ## Summary by Time
 
 | Time | Exercises |
@@ -71,7 +77,7 @@ Use this to compare against your actual times when testing the material.
 | 10 min | 01, 14, 18 |
 | 15 min | 02, 03, 04, 13, 15, 16, 17, 24, 25, 27, 31 |
 | 20 min | 05, 06, 07, 08, 19, 20, 23, 26, 28, 30 |
-| 25 min | 09, 10, 11, 21, 22, 29 |
+| 25 min | 09, 10, 11, 21, 22, 29, 32 |
 | 30 min | 12 |
 
 ## Notes
@@ -89,4 +95,4 @@ Copy `YOUR_TIMES.template.md` to `YOUR_TIMES.md` (gitignored) and fill in your a
 times alongside the estimates. Comparing over several sessions tells you where your
 weak spots are — which is the whole point of this repo.
 
-**Total estimated time for all 31 exercises: ~540 min (~9 hrs)**
+**Total estimated time for all 32 exercises: ~565 min (~9.5 hrs)**

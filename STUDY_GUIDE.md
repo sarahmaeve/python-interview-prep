@@ -73,6 +73,7 @@ Work through everything in order. The exercises are numbered by difficulty withi
 - **29**: asyncio testing
 - **30**: Pytest translation
 - **31**: Decorator hygiene (`functools.wraps`)
+- **32**: Thread safety (locks, races, the GIL myth)
 
 ## Key Skills by Interview Area
 
@@ -90,6 +91,7 @@ Work through everything in order. The exercises are numbered by difficulty withi
 | Modern control flow (pathlib, match/case) | 26, 27 |
 | Resource discipline (context managers, decorators) | 28, 31 |
 | asyncio testing | 29 |
+| Thread safety / concurrency | 32 |
 
 ## Guide-to-Exercise Prerequisites
 
@@ -115,3 +117,4 @@ Work through everything in order. The exercises are numbered by difficulty withi
 | 29 | Guide 12 (full) + Guide 05 (§10b AsyncMock) |
 | 30 | Guide 03 (§9 pytest translation cheat sheet) |
 | 31 | Guide 11 (§5–8 decorators) |
+| 32 | Guide 11 (§1–4 — why `with` guarantees release) + the exercise README's threading primer |

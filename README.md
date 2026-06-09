@@ -176,3 +176,9 @@ After attempting an exercise, check `solutions/` for a walkthrough of the diagno
 | 29 | Async Retry | asyncio, `await`, `AsyncMock`, `asyncio.timeout` | Fix 3 async-specific bugs in a retry client |
 | 30 | Pytest Translation | unittest → pytest idioms | Translate a unittest suite into pytest |
 | 31 | Decorator `@wraps` | `functools.wraps`, parameterised decorators, class decorators | Fix 3 decorator hygiene bugs |
+
+### Concurrency
+
+| # | Exercise | Topic Areas | Goal |
+|---|----------|-------------|------|
+| 32 | Thread Safety | `threading.Lock`, check-then-act races, lock hygiene, the GIL myth | Fix 3 concurrency bugs in a shared ticket office |
