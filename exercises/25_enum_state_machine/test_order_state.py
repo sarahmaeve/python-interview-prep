@@ -119,8 +119,8 @@ class TestSummarizeOrders(unittest.TestCase):
         self.assertEqual(summary[CANCELLED], 0)
 
     def test_single_cancelled_order(self):
-        """Specifically exercise the CANCELLED path — a typo-in-key bug
-        in the summary dict will cause a KeyError here."""
+        """A batch containing a cancelled order must be summarised
+        without errors."""
         summary = summarize_orders([Order("x", status=CANCELLED)])
         self.assertEqual(summary[CANCELLED], 1)
 

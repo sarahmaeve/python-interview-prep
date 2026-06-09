@@ -1,6 +1,6 @@
 # Solution 16 --- Fixing Mock Bugs in `test_inventory_service.py`
 
-## Bug 1: Wrong Patch Target (line 106)
+## Bug 1: Wrong Patch Target (line 95)
 
 **Location:** `TestFetchSupplierPrice.test_fetch_supplier_price`
 
@@ -22,7 +22,7 @@
 
 ---
 
-## Bug 2: Typo Hidden by Missing `spec` (line 136)
+## Bug 2: Typo Hidden by Missing `spec` (line 124)
 
 **Location:** `TestRestock.test_restock_calls_execute`
 
@@ -50,7 +50,7 @@ Adding `spec=Database` would have caught the typo immediately with an `Attribute
 
 ---
 
-## Bug 3: Wrong Return Type from Mock (line 144)
+## Bug 3: Wrong Return Type from Mock (line 131)
 
 **Location:** `TestGetStockWithTimestamp.test_get_stock_with_timestamp`
 
@@ -72,7 +72,7 @@ mock_time.return_value = datetime(2026, 3, 25, 10, 0, 0)
 
 ---
 
-## Bug 4: Stacked `@patch` Decorators with Swapped Arguments (line 159-161)
+## Bug 4: Stacked `@patch` Decorators with Swapped Arguments (lines 145-147)
 
 **Location:** `TestShouldReorder.test_should_reorder_checks_price`
 

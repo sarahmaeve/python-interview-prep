@@ -10,7 +10,7 @@
 
 ## Diagnosis Process
 
-- `test_success_on_first_attempt` fails because the return value is a `coroutine`, not `{"ok": True}`. The test message specifically calls out the forgotten `await`.
+- `test_success_on_first_attempt` fails because the return value is a `coroutine` object, not `{"ok": True}` — the telltale signature of a forgotten `await`.
 - `test_retries_on_transient_then_succeeds` fails because `attempt_count` is `2`, not `3`. Walking the `range` call by hand: `range(1, 3)` yields `[1, 2]`.
 - `test_concurrent_fetches_run_in_parallel` fails with an elapsed time close to 2× the backoff, revealing `time.sleep`. This is the bug pattern I've seen cause a 30× slowdown in production async HTTP clients.
 

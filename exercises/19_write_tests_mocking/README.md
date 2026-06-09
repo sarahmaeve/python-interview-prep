@@ -5,7 +5,8 @@
 The implementation in `order_service.py` is **correct** -- your job is not to fix
 it but to **write a test suite from scratch**. The test file
 `test_order_service.py` contains a skeleton with descriptive test method names
-and docstrings, but every body is just `pass`.
+and docstrings, but every body is a failing TODO stub — the suite starts red
+and goes green as you write real tests.
 
 This exercises the skill of testing code that has external dependencies -- you
 must decide what to mock, how to configure mocks, and what to assert.

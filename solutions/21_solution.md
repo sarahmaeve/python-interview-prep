@@ -62,12 +62,26 @@ if record not in self.errors:
 
 ## Diagnosis Process
 
-The `assertLogs` tests are the key diagnostic tool here. When you see:
+The `assertLogs` failures point at two different problems, even though the
+error text is identical:
 
 ```
 AssertionError: no logs of level WARNING or higher triggered on data_processor
 ```
 
-This tells you the code IS logging, but at the wrong level. Check the `_validate` method for `logger.debug()` calls that should be `logger.warning()`.
+For the validation tests (`test_logs_warning_for_missing_keys` and friends),
+the code IS logging — just at DEBUG, below the captured threshold. Check
+`_validate` for `logger.debug()` calls that should be `logger.warning()`.
+For `test_logs_warning_when_transform_fails`, nothing is logged at all:
+the `except Exception: pass` in `_transform` swallows the failure.
 
-The `test_summary_mixed_valid_and_invalid` failure points to the counting bug — it expects `processed_count=2` for 2 valid records out of 4, but the count is wrong because of the append-before-transform issue.
+`test_transform_failure_is_tracked_as_error` fails because `self.errors`
+is never appended to, so `error_count` stays 0. And
+`test_transform_failure_not_counted_as_processed` fails because the record
+is appended to `self.processed` BEFORE the transform runs — a record that
+then fails transformation is still counted as processed.
+
+Note how the tests trigger the failure path: a `str` subclass whose
+`.upper()` raises. It sails through `_validate` (it really is a str) and
+detonates mid-transform — the same shape as real-world data corruption
+that only surfaces partway through a pipeline.

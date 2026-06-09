@@ -14,7 +14,7 @@ python3 -m pytest test_temperature_monitor.py -v
 
 Pytest must be installed. If you set up the repo via `pip install --group dev` (or the Makefile's `make test-pytest` target), it already is.
 
-Your goal: fill in the TODOs in `test_temperature_monitor.py` until `pytest -v` reports 14 passing tests — all with real assertions, not vacuous `...` bodies.
+Your goal: fill in the TODOs in `test_temperature_monitor.py` until `pytest -v` reports 14 passing tests — every `pytest.fail(...)` stub replaced with a real translation.
 
 ## What changes
 

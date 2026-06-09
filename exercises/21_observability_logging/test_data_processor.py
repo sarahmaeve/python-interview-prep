@@ -9,6 +9,14 @@ import unittest
 from data_processor import DataProcessor
 
 
+class _ExplodingValue(str):
+    """A str whose .upper() raises — simulates a record that is valid on
+    arrival but fails partway through transformation."""
+
+    def upper(self):
+        raise RuntimeError("simulated corruption")
+
+
 class TestProcessRecords(unittest.TestCase):
     """Tests for the main processing pipeline."""
 
@@ -57,18 +65,29 @@ class TestProcessRecords(unittest.TestCase):
         summary = dp.process_records(records)
         self.assertEqual(summary["processed_count"], 1)
 
-    def test_handles_transform_error(self):
-        """A record whose value causes a transform error should be tracked
-        as an error, not counted as processed."""
+    def test_transform_failure_is_tracked_as_error(self):
+        """A record that fails during transformation must show up in the
+        summary's error_count and error_ids."""
         dp = DataProcessor()
-        # value=None passes validation? No — _validate checks isinstance(str).
-        # But we can trigger a transform error with a value that passes
-        # validation but fails .upper() — this is hard with basic strings,
-        # so we test the error tracking path directly:
-        # We give a valid record, then verify it's in processed.
-        records = [{"id": 1, "value": "hello"}]
-        dp.process_records(records)
-        self.assertIn("processed_at", dp.processed[0])
+        records = [
+            {"id": 1, "value": "fine"},
+            {"id": 2, "value": _ExplodingValue("boom")},
+        ]
+        summary = dp.process_records(records)
+        self.assertEqual(summary["error_count"], 1)
+        self.assertEqual(summary["error_ids"], [2])
+
+    def test_transform_failure_not_counted_as_processed(self):
+        """processed_count must include only records that completed the
+        transform step."""
+        dp = DataProcessor()
+        records = [
+            {"id": 1, "value": _ExplodingValue("boom")},
+            {"id": 2, "value": "ok"},
+        ]
+        summary = dp.process_records(records)
+        self.assertEqual(summary["processed_count"], 1)
+        self.assertEqual(dp.processed[0]["id"], 2)
 
 
 class TestLogging(unittest.TestCase):
@@ -110,6 +129,13 @@ class TestLogging(unittest.TestCase):
                 for msg in cm.output),
             f"Expected a warning about wrong type, got: {cm.output}"
         )
+
+    def test_logs_warning_when_transform_fails(self):
+        """A record that fails during transformation must be logged at
+        WARNING or higher — processing failures must never be silent."""
+        dp = DataProcessor()
+        with self.assertLogs("data_processor", level="WARNING"):
+            dp.process_records([{"id": 7, "value": _ExplodingValue("x")}])
 
     def test_no_warning_for_valid_records(self):
         """Valid records should NOT produce any warnings."""

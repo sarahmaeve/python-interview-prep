@@ -11,7 +11,7 @@
 ## Diagnosis Process
 
 - For bug 1: `test_remove_consecutive_completed` adds T1 (completed), T2 (completed), T3 (pending). After removing T1 at index 0, T2 shifts to index 0 but the iterator advances to index 1 (now T3), skipping T2.
-- For bug 2: `test_overdue_lexicographic_trap` sets up `"12/01/2025"` (overdue) and `"02/01/2027"` (not overdue). Lexicographic `<` of `"12/01/2025" < "03/25/2026"` is `False` (since `"1" < "0"` is `False`), so the truly overdue task is missed.
+- For bug 2: `test_overdue_across_year_boundary` sets up `"12/01/2025"` (overdue) and `"02/01/2027"` (not overdue). Lexicographic `<` of `"12/01/2025" < "03/25/2026"` is `False` (since `"1" < "0"` is `False`), so the truly overdue task is missed.
 - For bug 3: `test_bulk_reassign_actually_changes_assignee` checks that after `bulk_reassign`, the assignee field is actually updated. The generator is exhausted by `sum()`, so the subsequent `for` loop is a no-op.
 
 ## The Fix

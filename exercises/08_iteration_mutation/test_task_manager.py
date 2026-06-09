@@ -27,7 +27,7 @@ class TestRemoveCompleted(unittest.TestCase):
         self.assertEqual(tm.tasks[0]["task_id"], "T2")
 
     def test_remove_consecutive_completed(self):
-        """Two completed tasks in a row — the mutation bug skips the second."""
+        """Removing back-to-back completed tasks must remove every one of them."""
         tm = TaskManager()
         tm.add_task("T1", "A", "alice", "01/01/2026", status="completed")
         tm.add_task("T2", "B", "bob", "01/01/2026", status="completed")
@@ -53,10 +53,9 @@ class TestGetOverdue(unittest.TestCase):
         self.assertEqual(len(overdue), 1)
         self.assertEqual(overdue[0]["task_id"], "T1")
 
-    def test_overdue_lexicographic_trap(self):
-        """Lexicographically '12/01/2025' < '02/01/2026' is True, but
-        Dec 2025 is NOT after Feb 2026 — it's before. The buggy code
-        would wrongly include 02/01/2026 as overdue or miss 12/01/2025."""
+    def test_overdue_across_year_boundary(self):
+        """A task due in Dec 2025 is overdue by Mar 2026; a task due in
+        Feb 2027 is not. Both must be classified correctly."""
         tm = TaskManager()
         # This task is due Dec 1 2025 — clearly overdue on Mar 25 2026
         tm.add_task("T1", "Dec task", "alice", "12/01/2025")
@@ -85,8 +84,8 @@ class TestBulkReassign(unittest.TestCase):
         self.assertEqual(count, 2)
 
     def test_bulk_reassign_actually_changes_assignee(self):
-        """The generator-exhaustion bug means count is correct but no
-        tasks are actually reassigned."""
+        """bulk_reassign must update the assignee on every matching task,
+        not merely report how many matched."""
         tm = TaskManager()
         tm.add_task("T1", "A", "alice", "06/15/2026")
         tm.add_task("T2", "B", "alice", "06/15/2026")

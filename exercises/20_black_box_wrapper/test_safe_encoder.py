@@ -82,10 +82,8 @@ class TestSafeEncoderBatchEncode(unittest.TestCase):
         self.assertEqual(result, ["a|b", "c|d"])
 
     def test_batch_encode_independent_calls(self):
-        """Two sequential batch_encode calls must return independent results.
-
-        This test catches mutable default argument contamination.
-        """
+        """Two sequential batch_encode calls must return independent results —
+        the second call's output must not include the first call's records."""
         first = self.encoder.batch_encode([["a", "b"]])
         second = self.encoder.batch_encode([["c", "d"]])
         self.assertEqual(first, ["a|b"])

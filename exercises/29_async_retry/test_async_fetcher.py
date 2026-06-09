@@ -46,7 +46,7 @@ class TestAsyncFetcher(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(
             fetcher.attempt_count, 3,
             "with max_attempts=3 and two transient failures, the fetcher "
-            "must make all 3 attempts — check the retry loop's range() call",
+            "must make all 3 attempts",
         )
         self.assertEqual(client.get.await_count, 3)
 

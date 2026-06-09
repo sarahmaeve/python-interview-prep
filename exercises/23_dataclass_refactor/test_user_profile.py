@@ -42,8 +42,7 @@ class TestCreatedAtIsPerInstance(unittest.TestCase):
         self.assertNotEqual(
             a.created_at, b.created_at,
             "profiles created at different moments should have different "
-            "created_at timestamps — otherwise the default was evaluated "
-            "once at class definition time, not per instance",
+            "created_at timestamps",
         )
 
     def test_created_at_is_timezone_aware(self):

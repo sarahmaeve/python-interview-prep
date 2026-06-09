@@ -14,11 +14,6 @@ from unittest.mock import MagicMock, patch
 from inventory_service import Database, InventoryService
 
 
-# ---------------------------------------------------------------------------
-# CORRECT tests (these 6 pass)
-# ---------------------------------------------------------------------------
-
-
 class TestGetStock(unittest.TestCase):
     def test_get_stock_returns_quantity(self):
         """Stock level is read from the first row returned by the DB."""
@@ -96,9 +91,6 @@ class TestLowStockReport(unittest.TestCase):
         self.assertEqual(result, [])
 
 
-# ---------------------------------------------------------------------------
-
-
 class TestFetchSupplierPrice(unittest.TestCase):
     @patch("urllib.request.urlopen")
     def test_fetch_supplier_price(self, mock_urlopen):
@@ -128,7 +120,7 @@ class TestRestock(unittest.TestCase):
         result = service.restock("SKU1", 5)
 
         self.assertEqual(result, 15)
-        # Assert the DB was written to — but there's a typo below!
+        # Assert the DB was written to.
         self.assertTrue(mock_db.exceute.called)
 
 

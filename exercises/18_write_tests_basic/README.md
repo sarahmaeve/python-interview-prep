@@ -6,7 +6,8 @@ Unlike other exercises, the code here is **correct**. There are no bugs to fix.
 Instead, your job is to **write a complete test suite from scratch**.
 
 The test file has a skeleton with test class names and docstrings describing what
-each test should verify, but the test method bodies are empty (`pass`).
+each test should verify, but every test body is a stub that fails with a TODO
+marker — the suite starts red and goes green as you write real tests.
 
 This exercises the skill of designing tests: choosing what to test, writing
 meaningful assertions, and thinking about edge cases.
@@ -19,7 +20,8 @@ meaningful assertions, and thinking about edge cases.
    ```
    python3 -m unittest test_string_calculator -v
    ```
-4. Keep going until all tests pass with meaningful assertions (not just `pass`).
+4. Keep going until all tests pass with meaningful assertions (no `self.fail`
+   stubs left).
 5. **Challenge:** After filling in the provided tests, add 2-3 more tests for
    edge cases you think are missing.
 

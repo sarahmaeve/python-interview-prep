@@ -72,14 +72,13 @@ class TestTimedCacheCleanup(unittest.TestCase):
 
     @patch("cache_with_expiry.time")
     def test_cleanup_does_not_raise_on_multiple_expired(self, mock_time):
-        """Cleaning up several expired entries must not raise RuntimeError."""
+        """Cleaning up several expired entries in one pass must succeed."""
         mock_time.time.return_value = 1000.0
         cache = TimedCache()
         for i in range(10):
             cache.set(f"key_{i}", i, ttl=5)
         mock_time.time.return_value = 1006.0  # all expired
-        # This must not raise (e.g. RuntimeError from dict mutation during iteration)
-        cache.cleanup()
+        cache.cleanup()  # must complete without raising
 
     @patch("cache_with_expiry.time")
     def test_cleanup_on_empty_cache(self, mock_time):
