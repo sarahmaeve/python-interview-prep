@@ -76,10 +76,17 @@ class count_calls:
 
 `@functools.wraps` is the cheapest one-line fix in Python and the most consequential when it's missing:
 
-- **`unittest.mock.patch`** uses attribute introspection. If your decorated function's `__module__` and `__qualname__` don't match the original, patching can fail silently or patch the wrong target.
 - **Logging** messages that include `func.__name__` end up with `"wrapper"` everywhere, making log search useless.
 - **Sphinx / pdoc** generate empty documentation because the `__doc__` attribute was replaced.
-- **Stack traces** show `wrapper` instead of the real function name — harder to read, and tools like `sentry` group errors differently.
+- **Signature inspection** sees the generic `(*args, **kwargs)` wrapper instead
+  of the original parameters, which can break dependency injection and command
+  frameworks that inspect callables.
+- **Unwrapping tools** cannot reach the original callable because `__wrapped__`
+  is missing.
+
+`@wraps` does not rewrite the wrapper's code object, so traceback frames may
+still be named `wrapper`. It is also unrelated to whether
+`patch("module.function")` can replace that module attribute.
 
 Bug 2 is especially insidious: `@functools.wraps(max_attempts)` doesn't raise. `update_wrapper` does `getattr(target, attr)` inside a try/except for each of `__module__`, `__name__`, `__qualname__`, `__doc__`, `__dict__`. An `int` has `__module__` (it's `"builtins"`) and `__doc__` (type-level), but not `__name__` or `__qualname__` — so the copy is partial. Worse, `__wrapped__` is set unconditionally to the target, so `retry.__wrapped__ == 3` after `retry(3)`. A debugger staring at that attribute would scratch its head.
 

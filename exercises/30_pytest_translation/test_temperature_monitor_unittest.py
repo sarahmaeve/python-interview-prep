@@ -32,7 +32,7 @@ class TestTemperatureMonitorConstruction(unittest.TestCase):
 class TestRecordAndQuery(unittest.TestCase):
 
     def setUp(self):
-        self.monitor = TemperatureMonitor(low_threshold=0, high_threshold=30)
+        self.monitor = TemperatureMonitor(low_threshold=0, high_threshold=100)
 
     def tearDown(self):
         self.monitor.reset()

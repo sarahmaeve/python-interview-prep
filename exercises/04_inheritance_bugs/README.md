@@ -12,8 +12,12 @@ python3 -m unittest test_shapes
 
 All 10 tests should pass once every bug is fixed. Read the test file to understand the expected behavior, find the bugs, and fix them.
 
-## Hints
+## Principle Primer
 
-- Pay attention to how inherited attributes interact with subclass methods.
-- Double-check mathematical formulas.
-- When printing objects, make sure methods are actually called.
+A subclass inherits behavior that may depend on parent-owned state. If the
+subclass introduces another name for the same concept, updates must keep those
+representations synchronized—or, better, retain one source of truth. Also
+distinguish a bound method object from the result of calling it:
+`obj.method` and `obj.method()` are different values.
+
+If you get stuck, use [HINTS.md](HINTS.md).

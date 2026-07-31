@@ -6,9 +6,9 @@ This exercise flips the script -- the implementation works correctly, but the
 test file has bugs in how mocks are set up. Each failing test fails because of a
 mocking mistake, not a code mistake. Your job is to fix the tests.
 
-This exercises the skill of diagnosing mock-related test failures: wrong patch
-targets, missing spec constraints, incorrect return value types, swapped
-decorator arguments, and more.
+This exercises the skill of diagnosing mock-related test failures by comparing
+the test double's behavior with the real dependency contract and the name
+binding used by the implementation.
 
 ## Instructions
 
@@ -27,30 +27,12 @@ cd exercises/16_fix_test_mocks
 python -m unittest test_inventory_service -v
 ```
 
-## Hints (try without these first)
+## Principle Primer
 
-<details>
-<summary>Hint 1</summary>
-When a module does <code>from X import Y</code>, patching <code>X.Y</code>
-does not affect the module's local reference. You must patch where the name
-is looked up.
-</details>
+Mocks must be faithful in two directions: they must replace the name the code
+actually resolves, and their return values must support the operations the real
+objects support. A `spec` catches misspelled methods that an unrestricted mock
+would invent. With stacked patch decorators, remember that decorators apply
+inside-out, which determines injected argument order.
 
-<details>
-<summary>Hint 2</summary>
-<code>MagicMock()</code> without <code>spec=</code> will silently create any
-attribute you access, even misspelled ones. Adding a spec catches typos.
-</details>
-
-<details>
-<summary>Hint 3</summary>
-If the real code calls <code>.isoformat()</code> on a return value, your mock
-must return an object that actually has that method -- not a plain string.
-</details>
-
-<details>
-<summary>Hint 4</summary>
-When stacking <code>@patch</code> decorators, the bottom decorator's mock
-becomes the first positional argument. If you mix up the order, you configure
-the wrong mock.
-</details>
+If you get stuck, use [HINTS.md](HINTS.md).

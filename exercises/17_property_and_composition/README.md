@@ -27,31 +27,12 @@ cd exercises/17_property_and_composition
 python -m unittest test_temp_monitor -v
 ```
 
-## Hints (try without these first)
+## Principle Primer
 
-<details>
-<summary>Hint 1</summary>
-If you access a method without parentheses and get a <code>method object</code>
-instead of a number, the method is probably missing a <code>@property</code>
-decorator.
-</details>
+A property exposes method-backed behavior through attribute syntax. A
+getter-only property is read-only: assignment raises `AttributeError`; a setter
+must be declared with `@name.setter`. Composition means retaining references to
+the objects that perform the delegated behavior. When aggregating optional
+values, define whether absence means “skip,” “zero,” or “no result.”
 
-<details>
-<summary>Hint 2</summary>
-A <code>@property</code> getter alone makes the attribute read-only. To support
-assignment (<code>obj.x = value</code>) you also need a <code>@x.setter</code>
-method. Without it, assigning to the attribute overwrites the property entirely.
-</details>
-
-<details>
-<summary>Hint 3</summary>
-When you store objects in a dict for later retrieval, make sure the <em>value</em>
-is the object itself, not one of its attributes.
-</details>
-
-<details>
-<summary>Hint 4</summary>
-If some sensors have no readings, their average is <code>None</code>. Mixing
-<code>None</code> into <code>sum()</code> raises a <code>TypeError</code>.
-Filter first, then aggregate.
-</details>
+If you get stuck, use [HINTS.md](HINTS.md).

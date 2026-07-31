@@ -46,8 +46,16 @@ The read, the decision, and every write happen as one exclusive step. `with self
 
 ## Why This Bug Matters
 
-- **"The GIL makes Python thread-safe" is the most dangerous half-truth in Python concurrency.** The GIL serializes individual bytecodes, not your *logical* operations. Any sequence of read → decide → write can be interleaved.
-- **A subtlety worth knowing for interviews:** on modern CPython (3.12+), the interpreter only considers switching threads at loop back-edges and Python function entries. A bare `self.x = self.x + 1` with nothing in between often won't race anymore — which is exactly why these bugs survive code review. The moment real code does real work between the read and the write (pricing, validation, logging — here, `_order_value()`), the switch point reappears and the race is back. Don't reason from "my toy demo didn't fail"; reason from "is this read-modify-write atomic? No."
+- **“The GIL makes Python thread-safe” is a dangerous half-truth.** A standard
+  GIL-enabled CPython build serializes Python-bytecode execution, not logical
+  application operations. Free-threaded CPython builds can disable the GIL
+  entirely. In either model, a read → decide → write sequence needs explicit
+  synchronization.
+- **Exact thread-switch opportunities are implementation details.** They have
+  changed between CPython versions, calls and blocking operations introduce
+  additional opportunities, and free-threaded execution permits true
+  parallelism. Do not reason from “my toy demo did not fail”; reason from
+  whether the application invariant is protected.
 - **Manual `acquire()`/`release()` is the `open()` without `with` of concurrency.** Any exception between the two leaks the lock, and unlike a leaked file handle, a leaked lock takes the whole process hostage — every thread that touches that lock blocks forever. This is why `with lock:` exists.
 - **Reporting crashes are real outages.** The dict-iteration `RuntimeError` pattern frequently ships because reports "only read". Reading a structure that another thread is writing is still a data race.
 

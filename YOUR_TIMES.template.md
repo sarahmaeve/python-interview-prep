@@ -42,4 +42,8 @@ as you work through the exercises. Comparing to the estimates in
 | 34 | Flaky Tests              | 25 min | | | |
 | 35 | Debugging with pdb       | 25 min | | | |
 | 36 | Performance Tuning       | 20 min | | | |
-| | **Total** | **~680 min (~11.5 hrs)** | | | |
+| 37 | Package Imports          | 25 min | | | |
+| 38 | Async Cancellation       | 30 min | | | |
+| 39 | Equality and Hashing     | 25 min | | | |
+| 40 | Retry Idempotency        | 30 min | | | |
+| | **Total** | **~825 min (~13 hrs 45 min)** | | | |

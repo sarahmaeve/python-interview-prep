@@ -7,39 +7,28 @@ records, and formats transcripts.
 ## Why This Exercise Exists
 
 Every bug in `grade_processor.py` is the kind that a type checker like
-**mypy** would have caught automatically — but the code has no type hints,
-so the bugs slipped through silently.
+**mypy** catches automatically. The intended contracts are already annotated;
+each planted bug violates one of those contracts.
 
 ## Your Task
 
-The file `grade_processor.py` contains **4 bugs**. Run the tests with:
+The file `grade_processor.py` contains **4 bugs**. Run both the tests and mypy:
 
 ```bash
 python3 -m unittest test_grade_processor
-```
-
-All 12 tests should pass once every bug is fixed. Read the test file to
-understand the expected behavior, find the bugs, and fix them.
-
-## Bonus Challenge
-
-After all tests pass, add type hints to every function signature and class
-attribute in `grade_processor.py`. Then run:
-
-```bash
-pip install mypy
 mypy grade_processor.py --strict
 ```
 
-Your hints should be precise enough that mypy reports zero errors. This
-guarantees that if anyone reintroduces a similar bug, the type checker will
-flag it before the code ever runs.
+Mypy should initially report four errors corresponding to the four behavioral
+bugs. Do not weaken or remove the annotations; use them as machine-checked
+specifications while tracing the failing tests. When finished, all 12 tests
+should pass and mypy should report zero errors.
 
-## Hints
+## Principle Primer
 
-- Think about what a function returns in *every* code path, including edge cases.
-- Pay attention to the types that raw/external data actually provides versus
-  what the rest of the code assumes.
-- When combining data structures, make sure the result is still the type
-  downstream code expects.
-- Consider whether a function should return an empty container or `None`.
+Annotations describe every path through a function, not only the happy path.
+Use a type-checker error as a pointer to a contract mismatch, then confirm the
+behavioral consequence with the tests. Do not silence the checker by weakening
+an annotation when the implementation is what violates the intended contract.
+
+If you get stuck, use [HINTS.md](HINTS.md).

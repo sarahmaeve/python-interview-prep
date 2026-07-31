@@ -13,35 +13,21 @@ python -m unittest test_service_client
 
 Your goal: edit `service_client.py` until all tests pass.
 
-## Bugs: 3
+## Principle Primer
 
-<details>
-<summary>Hint 1 (gentle)</summary>
+Configuration has a lifetime. Reading it during import or function definition
+can freeze values before a process or test establishes its environment.
+Resolve configuration at an intentional boundary, pass it consistently, and
+ensure configured safeguards such as timeouts reach the external call they are
+meant to constrain.
 
-The timeout is configured but never actually used. Check the `urlopen()` call.
-</details>
-
-<details>
-<summary>Hint 2 (moderate)</summary>
-
-Default arguments are evaluated once, at function/class definition time. What happens if `get_config()` is used as a default parameter value in `__init__`? What do tests that set `os.environ` before creating a client see?
-
-Also: `health_check()` checks the environment directly instead of using the injected config. Why does that matter for tests?
-</details>
-
-<details>
-<summary>Hint 3 (specific)</summary>
-
-1. **Timeout not passed**: `fetch()` calls `urlopen(url)` without the `timeout` keyword argument. Fix: `urlopen(url, timeout=self.config["timeout"])`.
-
-2. **Import-time default argument**: `__init__` has `config=get_config()` — this captures environment variables at import time. Tests that modify `os.environ` after import see stale config. Fix: change to `config=None` and call `get_config()` inside the method body.
-
-3. **Direct environment access in health_check**: `health_check()` reads `os.environ.get("CI")` directly instead of `self.config["is_ci"]`. This bypasses injected config, making the method untestable. Fix: check `self.config["is_ci"]` instead.
-</details>
+There are 3 bugs. If you get stuck, use [HINTS.md](HINTS.md).
 
 ## Discussion Questions
 
-After fixing the bugs, consider these questions. There's no single right answer — the goal is to practice articulating trade-offs, as you would in the interview's "systems dialogue" portion.
+After the tests pass, consider these questions. There's no single right answer
+— the goal is to practice articulating trade-offs, as you would in the
+interview's "systems dialogue" portion.
 
 1. **Environment parity**: This code reads `API_BASE_URL` from the environment. What could go wrong if CI uses a different base URL than production? How would you ensure the test environment is representative?
 

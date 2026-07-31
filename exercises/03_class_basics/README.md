@@ -12,8 +12,12 @@ python3 -m unittest test_bank_account
 
 All 10 tests should pass once every bug is fixed. Read the test file to understand the expected behavior, find the bugs, and fix them.
 
-## Hints
+## Principle Primer
 
-- Think about mutable default values and where attributes are initialized.
-- Check return values carefully.
-- Make sure multi-step operations handle failures correctly.
+Per-account state belongs on each instance, normally initialized in
+`__init__`; mutable state stored on the class is shared by every instance.
+Method return values are part of the contract, especially when one operation
+coordinates several others. For a multi-step operation, decide what should
+happen when an early step fails before allowing later steps to run.
+
+If you get stuck, use [HINTS.md](HINTS.md).

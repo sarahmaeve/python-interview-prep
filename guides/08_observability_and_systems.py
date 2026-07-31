@@ -17,7 +17,20 @@ TABLE OF CONTENTS
   5. assertLogs in unittest             (line ~320)
   6. Environment-aware configuration    (line ~380)
   7. Timeout and retry patterns         (line ~420)
-  8. CI/CD considerations for tests     (line ~480)
+  8. Retry identity and idempotency      (line ~540)
+  9. CI/CD considerations for tests     (line ~620)
+
+OFFICIAL DOCUMENTATION
+  logging:
+    https://docs.python.org/3/library/logging.html
+  urllib request timeouts:
+    https://docs.python.org/3/library/urllib.request.html#urllib.request.urlopen
+  Dictionary membership:
+    https://docs.python.org/3/library/stdtypes.html#mapping-types-dict
+  UUID generation:
+    https://docs.python.org/3/library/uuid.html#uuid.uuid4
+  HTTP idempotent methods (RFC 9110, section 9.2.2):
+    https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2
 """
 
 import io
@@ -539,7 +552,88 @@ def demo_retry_with_logging():
 
 
 # ============================================================================
-# 8. CI/CD CONSIDERATIONS FOR TESTS
+# 8. RETRY IDENTITY AND IDEMPOTENCY
+# ============================================================================
+#
+# A timeout tells the caller that it did not receive a result.  It does NOT
+# prove the remote operation failed.  The service may have committed the
+# change and then lost the response.  Retrying a state-changing request safely
+# therefore requires an identity for the caller's logical operation.
+#
+# Keep these terms separate in an interview:
+#   - attempt: one network call; a retry creates another attempt
+#   - operation: the caller's one intent; every attempt keeps this identity
+#
+# A cooperating service stores the result for an idempotency key.  Replaying
+# the same operation returns that result instead of performing the work again.
+
+
+class SeatReservationService:
+    """A tiny in-memory model of a service supporting idempotency keys."""
+
+    def __init__(self):
+        self._outcomes: dict[str, tuple[str, int]] = {}
+
+    def reserve(self, operation_id: str, seat: str) -> int:
+        if operation_id in self._outcomes:
+            original_seat, confirmation = self._outcomes[operation_id]
+            if original_seat != seat:
+                raise ValueError("operation ID was already used for another seat")
+            return confirmation
+
+        # Confirmation 0 is valid.  Membership above is deliberately checked
+        # with `in`, rather than by testing whether a cached result is truthy.
+        confirmation = len(self._outcomes)
+        self._outcomes[operation_id] = (seat, confirmation)
+        return confirmation
+
+    @property
+    def reservation_count(self) -> int:
+        return len(self._outcomes)
+
+
+def demo_idempotency():
+    print("\n" + "=" * 60)
+    print("8. RETRY IDENTITY AND IDEMPOTENCY")
+    print("=" * 60)
+
+    service = SeatReservationService()
+    operation_id = "reservation-for-conference-seat"
+
+    # Imagine the service commits this result, but the response is lost.
+    first_result = service.reserve(operation_id, "B-12")
+
+    # The retry is another attempt at the SAME logical operation, so it uses
+    # the same ID.  The service returns the recorded result without reserving
+    # another seat.
+    replayed_result = service.reserve(operation_id, "B-12")
+
+    assert first_result == replayed_result == 0
+    assert service.reservation_count == 1
+    print(f"  first result:       {first_result}")
+    print(f"  replayed result:    {replayed_result}")
+    print(f"  reservations made: {service.reservation_count}")
+
+    try:
+        service.reserve(operation_id, "C-03")
+    except ValueError as error:
+        print(f"  conflicting replay rejected: {error}")
+
+    print("""
+  Production design questions:
+    - Who creates and persists the operation ID?
+    - What request fields are compared when a key is replayed?
+    - How long are outcomes retained, and in what namespace?
+    - Is the check-and-record operation atomic across concurrent workers?
+
+  An in-memory dictionary illustrates the contract but is not a durable or
+  concurrent idempotency store.  Real implementations normally need a shared
+  uniqueness constraint or transaction.
+    """)
+
+
+# ============================================================================
+# 9. CI/CD CONSIDERATIONS FOR TESTS
 # ============================================================================
 #
 # This section is discussion material — no runnable code.
@@ -548,7 +642,7 @@ def demo_retry_with_logging():
 def print_ci_considerations():
     """Print discussion points about CI/CD and test behavior."""
     print("\n" + "=" * 60)
-    print("8. CI/CD CONSIDERATIONS FOR TESTS")
+    print("9. CI/CD CONSIDERATIONS FOR TESTS")
     print("=" * 60)
     print("""
   Tests that pass locally but fail in CI (or vice versa) are a common
@@ -629,6 +723,7 @@ def main():
     demo_assert_logs()
     demo_environment_config()
     demo_retry_with_logging()
+    demo_idempotency()
     print_ci_considerations()
 
     print("\n" + "=" * 60)
@@ -643,7 +738,8 @@ def main():
     5. assertLogs("name", level="WARNING") — test your logging
     6. config=None sentinel — avoid import-time evaluation
     7. Always pass timeout= to network calls
-    8. Think about what differs between local and CI
+    8. Keep one operation identity across retry attempts
+    9. Think about what differs between local and CI
 
   Next: Try Exercise 21 (Observability & Logging) to practice
   instrumenting code and testing log output with assertLogs.

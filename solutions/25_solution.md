@@ -49,7 +49,9 @@ summary = {
 
 ## Why This Bug Matters
 
-Every one of these bugs becomes impossible when you refactor the status strings into a `StrEnum`:
+These bugs become structurally harder—and the three shown here become
+impossible—when the refactor represents status throughout the model with a
+`StrEnum` and consistently refers to members:
 
 ```python
 from enum import StrEnum
@@ -62,11 +64,15 @@ class OrderStatus(StrEnum):
     CANCELLED = "cancelled"
 ```
 
-With that in place:
+With that complete refactor in place:
 
 - `OrderStatus.PAYED` raises `AttributeError` at import time — bug 1 never loads.
 - Membership checks use enum members: `self.status in (OrderStatus.DELIVERED, OrderStatus.CANCELLED)`. There's no string literal to mistype.
 - The summary dict uses enum members as keys, and `summary[order.status] += 1` can't miss because `order.status` IS an `OrderStatus`.
+
+Defining an enum alone is not enough. Code that keeps accepting and comparing
+raw strings can still contain the same typos, and values arriving from external
+systems still require validation or conversion to `OrderStatus`.
 
 ## The Recommended Refactor
 
@@ -102,6 +108,9 @@ The tests still pass because `StrEnum` members ARE strings — `OrderStatus.PAID
 
 ## Discussion
 
-- The story this exercise tells is the case FOR stricter types. Every bug is the kind that slips past code review because the string literal LOOKS right. `StrEnum` moves the check to import time — where it should be.
+- The story this exercise tells is the case for stricter types. When code uses
+  enum members consistently, a misspelled member fails during module execution
+  and type checkers can flag it before runtime. Raw strings do not gain that
+  protection merely because an enum exists nearby.
 - For state machines specifically, pattern-matching + `typing.assert_never` (Guide 10, Section 8) gives you *exhaustiveness* too: add a new status member and mypy flags every `match` that doesn't handle it.
 - If the statuses in your system cross a wire (JSON field, HTTP header, DB column), `StrEnum` is ideal because its values serialise without ceremony. Plain `Enum` requires `.value` at every boundary.

@@ -20,23 +20,11 @@ Your goal is to edit `weather_client.py` until all tests pass. Do **not** modify
 - `get_forecast(self, city, days=5)` -- fetches a multi-day forecast and returns a list of daily temperatures.
 - `get_temperature_with_retry(self, city, retries=3)` -- same as `get_temperature`, but retries up to `retries` times on network errors.
 
-## Hints
+## Principle Primer
 
-<details>
-<summary>Hint 1 (gentle)</summary>
-Look carefully at the JSON key names the code uses. Do they match what the API actually returns?
-</details>
+An HTTP client sits at a representation boundary. It must encode user input for
+URLs, interpret the response schema exactly, and define whether a retry count
+means total attempts or additional attempts. Tests replace the network at the
+name the module actually uses, making those boundary rules deterministic.
 
-<details>
-<summary>Hint 2 (moderate)</summary>
-One function builds a URL from user input. What happens when the city name contains a space?
-</details>
-
-<details>
-<summary>Hint 3 (specific)</summary>
-
-1. `get_temperature` accesses `data["main"]["temperature"]`, but the API returns the key `"temp"`.
-2. `get_temperature_with_retry` gives up one attempt too early due to an off-by-one error in the final-attempt check.
-3. `get_forecast` does not URL-encode the city name, so cities like "New York" produce an invalid URL.
-
-</details>
+If you get stuck, use [HINTS.md](HINTS.md).

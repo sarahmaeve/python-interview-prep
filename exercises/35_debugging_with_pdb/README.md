@@ -1,6 +1,8 @@
 # Exercise 35: Debugging with pdb
 
-An inventory audit pipeline (`inventory_audit.py`) has **3 bugs**. They're deliberately the kind that are easy to gloss over when reading — data corrupted by an alias two frames away, a write that happens one indentation level too far out, a slice that quietly eats a row. The point of this exercise is the *method*: find them with the debugger, not with `print()`.
+An inventory audit pipeline (`inventory_audit.py`) has **3 bugs** that are easy
+to gloss over while reading. The point of this exercise is the *method*: find
+where the data first becomes wrong with the debugger, not with `print()`.
 
 **This exercise practices:** `breakpoint()` and pdb fluency — stepping, inspecting, and watching state change — which is what "debug unfamiliar code live" looks like in an interview screen-share.
 
@@ -22,7 +24,7 @@ breakpoint()        # Python 3.7+; remove it when you're done
 Then run the *one failing test* you're chasing:
 
 ```bash
-python3 -m unittest test_inventory_audit.TestMergeDuplicates.test_input_rows_are_not_modified
+python3 -m unittest test_inventory_audit.TestParseRows.test_parses_all_rows
 ```
 
 The commands you'll use constantly:
@@ -41,7 +43,8 @@ The commands you'll use constantly:
 
 Two more tools worth knowing:
 
-- **Post-mortem**: when a test ERRORs (like the `NameError` in this suite), run the module under pdb and let it drop you at the crash site with every local intact:
+- **Post-mortem**: when a test errors, run the module under pdb and let it drop
+  you at the crash site with every local intact:
   ```bash
   python3 -m pdb -c continue test_inventory_audit.py
   ```
@@ -53,32 +56,10 @@ Two more tools worth knowing:
 2. Put `breakpoint()` at the top of the function under test. Run just that test.
 3. `pp` the inputs. Are they what the test passed in? (If not, something earlier corrupted them.)
 4. `n` through the function, `pp`-ing the suspect structure after each line. The first line after which the data is wrong *is* the bug — read that line character by character.
-5. For the corruption bug: `pp rows` *before* and *after* the call that isn't supposed to modify them. When you see them change, `s` INTO the call and watch which line writes through the alias.
+5. When you suspect an unintended side effect, inspect the caller's value
+   before and after the call, then step into the call to find the first write.
 
-## Bugs: 3
-
-<details>
-<summary>Hint 1 (gentle — method, not location)</summary>
-
-Chase the three failures separately: one function returns too little data, one modifies something it promised not to, one writes to the wrong place. For each, the session above will corner the line in under ten steps. For the ERROR, use post-mortem pdb and `p` the loop variables at the crash.
-</details>
-
-<details>
-<summary>Hint 2 (moderate)</summary>
-
-1. In `parse_rows`, `pp rows` just before the return and count them against the input lines. Look hard at the slice in the `for` statement.
-2. In the merge test, `pp rows` after `merge_duplicates(rows)` returns — the caller's dicts changed. Step into the function and watch which assignment stores a *reference* instead of a copy.
-3. In `apply_adjustments`, step the inner loop with `n` and `p row` at each iteration — then notice which iteration the `row["qty"] = ...` line actually runs on, and at which indentation level it sits.
-</details>
-
-<details>
-<summary>Hint 3 (specific)</summary>
-
-1. **`parse_rows`**: `raw_lines[1:-1]` skips the header AND the last line. Use `raw_lines[1:]`.
-2. **`merge_duplicates`**: `merged[sku] = row` stores the caller's dict; the later `merged[sku]["qty"] +=` then mutates the caller's data. Store a copy: `merged[sku] = dict(row)`.
-3. **`apply_adjustments`**: `row["qty"] = new_qty` sits OUTSIDE the inner loop, so it writes the adjustment onto whatever row the loop ended on (and raises NameError when nothing matched). Move the assignment inside the `if`: `row["qty"] = row["qty"] + delta`, and delete the dangling line.
-
-</details>
+There are 3 bugs. If you get stuck, use [HINTS.md](HINTS.md).
 
 ## After you finish
 

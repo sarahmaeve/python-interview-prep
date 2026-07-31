@@ -400,9 +400,9 @@ class TestAssertRaisesRegex(unittest.TestCase):
 # ============================================================================
 # 9. PYTEST TRANSLATION CHEAT SHEET
 # ============================================================================
-# Most real-world Python teams in 2025 use pytest, not unittest.  The
-# concepts are the same — only the syntax differs.  If the next codebase
-# you see uses pytest, here's the translation table:
+# Many Python codebases use pytest rather than unittest.  The core testing
+# concepts are the same even though fixtures and syntax differ.  If the next
+# codebase you see uses pytest, here's the translation table:
 #
 #     unittest                         pytest
 #   ───────────────────────────────   ──────────────────────────────────────

@@ -5,6 +5,14 @@ Run this file:  python guides/02_classes_and_oop.py
 
 This guide covers the OOP concepts and gotchas that appear most often in
 Python interviews. Every section prints its own output.
+
+OFFICIAL DOCUMENTATION
+  Data model (__eq__, __hash__):
+    https://docs.python.org/3/reference/datamodel.html#object.__eq__
+  NotImplemented:
+    https://docs.python.org/3/library/constants.html#NotImplemented
+  dataclasses:
+    https://docs.python.org/3/library/dataclasses.html
 """
 
 # ---------------------------------------------------------------------------
@@ -174,18 +182,47 @@ points = [Point(1, 2), Point(3, 4)]
 print(f"  print(list) -> {points}")     # [Point(1, 2), Point(3, 4)]
 print()
 
-# --- __eq__ and __hash__ ---
-# Defining __eq__ makes your objects comparable. But Python then sets
-# __hash__ = None, making the object unhashable (can't use in sets or
-# as dict keys).  If you need both, define __hash__ too.
+# --- 4b: __eq__, NotImplemented, and __hash__ ---
+# Equality is a cooperative protocol.  Returning NotImplemented tells Python
+# "this type does not know how to compare itself with that type" and gives the
+# other operand a chance to answer.  It is a return value, not an exception.
 #
-#   class Point:
-#       def __init__(self, x, y):
-#           self.x, self.y = x, y
-#       def __eq__(self, other):
-#           return isinstance(other, Point) and (self.x, self.y) == (other.x, other.y)
-#       def __hash__(self):
-#           return hash((self.x, self.y))
+# Sets and dictionaries require one crucial invariant:
+#
+#     if a == b, then hash(a) == hash(b)
+#
+# Equality and hashing must therefore use the same canonical state.  That
+# state must not change while the object is being used as a key.
+
+
+class EmailAddress:
+    """A small immutable-by-convention value object."""
+
+    def __init__(self, address: str) -> None:
+        self._normalized = address.strip().casefold()
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, EmailAddress):
+            return NotImplemented
+        return self._normalized == other._normalized
+
+    def __hash__(self) -> int:
+        return hash(self._normalized)
+
+
+primary = EmailAddress("  Ada@Example.COM ")
+same_address = EmailAddress("ada@example.com")
+print("  Equality and hashing:")
+print(f"    normalized values compare equal: {primary == same_address}")
+print(f"    equal values have equal hashes:   {hash(primary) == hash(same_address)}")
+print(f"    set removes the duplicate:        {len({primary, same_address})} item")
+
+# Defining __eq__ without defining __hash__ makes an ordinary class
+# deliberately unhashable: Python sets __hash__ = None.  Do not add a hash
+# merely to silence that TypeError.  First decide whether the equality state
+# is genuinely immutable.  For value objects, a frozen dataclass (section 9)
+# often expresses that decision better than hand-written methods.
+print()
 
 
 # ---------------------------------------------------------------------------
@@ -652,11 +689,11 @@ print(f"  stats.mean  = {stats.mean}   (first access — computes)")
 print(f"  stats.mean  = {stats.mean}   (second access — cached, no recompute)")
 print(f"  stats.total = {stats.total}")
 
-# Gotcha: @cached_property writes to self.__dict__.  If __slots__ is in use
-# WITHOUT including the attribute, the write fails with AttributeError.
-# For dataclasses with slots=True, add the cached_property name to __slots__
-# or skip slots on that class.
-print("  WARNING: @cached_property + __slots__ needs the name in __slots__.\n")
+# Gotcha: @cached_property caches by writing to self.__dict__.  A slotted class
+# with no __dict__ therefore cannot use it.  A hand-written slotted class can
+# include "__dict__" as a slot; otherwise use @property, cache somewhere else,
+# or do not combine slots=True with cached_property.
+print("  WARNING: @cached_property requires an instance __dict__.\n")
 
 
 # ---------------------------------------------------------------------------
@@ -666,6 +703,8 @@ print("  WARNING: @cached_property + __slots__ needs the name in __slots__.\n")
 # - Mutating a shared mutable class attribute affects all instances.
 # - MRO controls method lookup order; super() follows it cooperatively.
 # - Define __repr__ for developers, __str__ for end users.
+# - Equality should return NotImplemented for unsupported operand types.
+# - Equal objects need equal hashes; hash-relevant state must remain stable.
 # - Use @property for validation and computed attributes.
 # - Prefer composition ("has-a") over inheritance when the relationship
 #   is not a natural "is-a".

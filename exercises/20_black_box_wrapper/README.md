@@ -35,26 +35,11 @@ e.decode(e.encode(["Hello", "World"]))  # is round-trip clean?
 | `safe_encoder.py` | Wrapper (has 3 bugs) | **YES** |
 | `test_safe_encoder.py` | Tests for the wrapper | NO |
 
-## Bugs: 3
+## Principle Primer
 
-<details>
-<summary>Hint 1 (gentle)</summary>
+An adapter owns the boundary between an unreliable dependency and a stable
+application contract. Explore the dependency empirically, document what it
+actually does, and normalize quirks in one place. Avoid exposing dependency
+state or delegating through behavior known to retain state across calls.
 
-Try encoding `["a", "b", "c"]` with the black box directly. Look at the last character of the result. Then try decoding what you just encoded — is the round-trip clean?
-</details>
-
-<details>
-<summary>Hint 2 (moderate)</summary>
-
-Read the `encode()` method in `safe_encoder.py` carefully. The None-rejection check has an inverted condition — it raises on valid values and lets None through. Also, the method returns the black box's raw output without cleaning it up.
-</details>
-
-<details>
-<summary>Hint 3 (specific)</summary>
-
-1. **Trailing separator**: `encode()` returns the black box's output as-is, which always has a trailing separator (e.g., `"a|b|c|"`). Strip it with `result.rstrip(self._separator)` or `result[:-1]`.
-
-2. **Inverted None check**: The condition `if field is not None` raises for valid fields. It should be `if field is None`.
-
-3. **Mutable default contamination**: `batch_encode()` delegates directly to `self._encoder.batch_encode(records)`, which has a mutable default argument that accumulates across calls. Instead, build the batch by calling `self.encode()` on each record individually: `return [self.encode(record) for record in records]`.
-</details>
+There are 3 bugs. If you get stuck, use [HINTS.md](HINTS.md).

@@ -17,23 +17,12 @@ Your goal is to edit `shopping_cart.py` until all tests pass. Do **not** modify 
 - `apply_discount(total, percent)` — takes a numeric total and a whole-number percentage (e.g. `10` for 10%) and returns the discounted total.
 - `format_receipt(items, total)` — returns a newline-separated string listing every item and the final total.
 
-## Hints
+## Principle Primer
 
-<details>
-<summary>Hint 1 (gentle)</summary>
-Pay attention to the data types flowing through each function. Are the inputs what the code expects?
-</details>
+Small functions still have contracts. Track the representation of each value
+at the boundary: data that looks numeric may arrive as text, a percentage can
+mean a whole number or a ratio, and formatted output has an exact public shape.
+Convert once at the boundary, perform calculations on numbers, and format only
+when producing display text.
 
-<details>
-<summary>Hint 2 (moderate)</summary>
-One function has an arithmetic error involving how percentages are represented. Another has a formatting inconsistency between item lines and the total line.
-</details>
-
-<details>
-<summary>Hint 3 (specific)</summary>
-
-1. `calculate_total`: The `"price"` values in each item dict are strings, not numbers. The function needs to convert them.
-2. `apply_discount`: The `percent` parameter is a whole number (e.g. 10), but the code uses it as if it were already a decimal (0.10).
-3. `format_receipt`: Item lines print the raw string price without a `$` sign or consistent formatting, while the total line uses `$` and `.2f` formatting. The item lines need to match.
-
-</details>
+If you get stuck, use [HINTS.md](HINTS.md).

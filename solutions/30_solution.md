@@ -40,7 +40,7 @@ def test_default_thresholds():
 
 @pytest.fixture
 def monitor() -> TemperatureMonitor:
-    return TemperatureMonitor(low_threshold=0, high_threshold=30)
+    return TemperatureMonitor(low_threshold=0, high_threshold=100)
 
 
 def test_empty_monitor_has_no_latest(monitor):
@@ -82,20 +82,15 @@ def test_average_of_readings(monitor):
     (100.1, True),
 ])
 def test_classification(monitor, celsius, expected):
-    # NOTE: the unittest version uses a monitor with range [0,100] for
-    # this subTest block; the fixture's [0,30] range doesn't match.
-    # Construct a wider monitor here, or parameterise the monitor.
-    m = TemperatureMonitor(low_threshold=0, high_threshold=100)
-    assert m.is_out_of_range(Reading(celsius=celsius)) is expected
+    assert monitor.is_out_of_range(Reading(celsius=celsius)) is expected
 
 
-def test_out_of_range_readings_filters_correctly():
-    m = TemperatureMonitor(low_threshold=0, high_threshold=100)
-    m.record(50)
-    m.record(-1)
-    m.record(101)
-    m.record(99)
-    flagged = m.out_of_range_readings()
+def test_out_of_range_readings_filters_correctly(monitor):
+    monitor.record(50)
+    monitor.record(-1)
+    monitor.record(101)
+    monitor.record(99)
+    flagged = monitor.out_of_range_readings()
     assert [r.celsius for r in flagged] == [-1, 101]
 
 

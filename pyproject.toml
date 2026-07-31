@@ -25,9 +25,9 @@ dev = [
 # ---------------------------------------------------------------------------
 
 [tool.pytest.ini_options]
-# Collect tests from every exercise directory. Each exercise is a standalone
-# package with its own source next to its test file, so rootdir tricks are
-# unnecessary when pytest is invoked from the repo root.
+# Collect tests from every isolated exercise directory. Most keep source next
+# to the test file; some contain a package of their own. Pytest can resolve both
+# layouts when invoked from the repo root.
 testpaths = ["exercises", "guides"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
@@ -39,8 +39,8 @@ filterwarnings = [
 
 [tool.mypy]
 python_version = "3.11"
-# Strictness dial: strict on guides and the "add type hints" exercise,
-# lenient on debug exercises (they intentionally contain type-unsafe code).
+# Check typed code inside guides and the "add type hints" exercise while
+# keeping debug exercises lenient (they intentionally contain type-unsafe code).
 strict = false
 warn_unused_ignores = true
 warn_return_any = true

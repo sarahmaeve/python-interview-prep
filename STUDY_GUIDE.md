@@ -76,8 +76,12 @@ Work through everything in order. The exercises are numbered by difficulty withi
 - **32**: Thread safety (locks, races, the GIL myth)
 - **33**: Capstone — five bugs across five modules; do this last
 - **34**: Flaky-test stabilization (randomness, hash order, clocks, fixtures)
-- **35**: Debugging with pdb (stepping, post-mortem, aliasing)
+- **35**: Debugging with pdb (stepping, post-mortem, state inspection)
 - **36**: Performance tuning (accidental O(n²), profiling)
+- **37**: Package/import behavior (`sys.path`, relative imports, `python -m`, cycles)
+- **38**: Async cancellation and structured concurrency
+- **39**: Equality, hashing, and immutable value keys
+- **40**: Retry idempotency and ambiguous outcomes
 
 ## Key Skills by Interview Area
 
@@ -94,12 +98,15 @@ Work through everything in order. The exercises are numbered by difficulty withi
 | Modern value types (@dataclass, StrEnum, Decimal) | 23, 24, 25 |
 | Modern control flow (pathlib, match/case) | 26, 27 |
 | Resource discipline (context managers, decorators) | 28, 31 |
-| asyncio testing | 29 |
+| asyncio testing and lifecycle | 29, 38 |
 | Thread safety / concurrency | 32 |
 | Navigating multi-module codebases | 33 |
 | Flaky tests / determinism | 34 |
 | Live debugging (pdb) | 35 |
 | Performance / complexity | 36 |
+| Package and import debugging | 37 |
+| Equality / hashing contracts | 39 |
+| Retry safety / idempotency | 22, 29, 40 |
 
 ## Guide-to-Exercise Prerequisites
 
@@ -125,8 +132,12 @@ Work through everything in order. The exercises are numbered by difficulty withi
 | 29 | Guide 12 (full) + Guide 05 (§10b AsyncMock) |
 | 30 | Guide 03 (§9 pytest translation cheat sheet) |
 | 31 | Guide 11 (§5–8 decorators) |
-| 32 | Guide 11 (§1–4 — why `with` guarantees release) + the exercise README's threading primer |
+| 32 | Guide 14 (threading and shared state) + Guide 11 (§1–4 — why `with` guarantees release) |
 | 33 | None — it synthesizes patterns from earlier exercises; attempt it after the core sets (01–25) |
-| 34 | Guide 04 (§8 "it works sometimes" checklist) + Guide 05 (§6 mocking the clock) |
+| 34 | Guide 15 (§1–4 test reliability) + Guide 04 (§8 "it works sometimes" checklist) |
 | 35 | Guide 04 (workflow + breakpoint() tip) + the exercise README's pdb crash course |
-| 36 | None — the exercise README covers cProfile/timeit and the cost model |
+| 36 | Guide 15 (§5–7 profiling, growth, and performance tests) |
+| 37 | Guide 13 (imports, packages, and module execution) + Guide 04 (traceback reading) |
+| 38 | Guide 12 (§3–5 TaskGroup, timeout, cancellation, and cleanup) |
+| 39 | Guide 02 (§4b equality/hash contracts and §9 dataclass) |
+| 40 | Guide 08 (§7–8 retries, operation identity, and idempotency) |

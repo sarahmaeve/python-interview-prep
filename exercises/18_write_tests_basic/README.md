@@ -31,3 +31,9 @@ meaningful assertions, and thinking about edge cases.
 - Testing both normal behavior and error conditions
 - Thinking about boundary conditions (e.g., exactly 1000 vs. 1001)
 - Using `setUp` to avoid repetition across tests
+
+A useful test has a reason to fail: arrange one meaningful condition, perform
+the behavior, then assert an observable result or exception. Avoid assertions
+that merely repeat the implementation or pass regardless of its output.
+
+If you get stuck, use [HINTS.md](HINTS.md).

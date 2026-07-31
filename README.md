@@ -15,6 +15,13 @@ This is **not** an algorithm drill or LeetCode substitute. The exercises here mi
 
 See **[STUDY_GUIDE.md](STUDY_GUIDE.md)** for prioritized 2-hour, 4-hour, and full-day prep tracks.
 
+## Symptom-First Analysis Training
+
+The [analysis training](analysis_training/README.md) begins with ambiguous
+incident reports rather than complete exercise specifications. Its tactical
+Wheel of Misfortune scenarios practice clarification, hypothesis-driven
+evidence gathering, bounded repairs, and concise technical handoffs.
+
 ## Prerequisites
 
 - **Python 3.11+** — the guides and exercises use idioms introduced in 3.10 (`match`/`case`, `X | None`) and 3.11 (`StrEnum`, `typing.Self`, `assert_never`, `asyncio.timeout`, `asyncio.TaskGroup`, `ExceptionGroup`).
@@ -37,7 +44,7 @@ make test-guides  # runs every guide (each is self-verifying)
 make check        # lint + typecheck + tests (what CI runs)
 ```
 
-Without the Makefile (each exercise is its own standalone package — discovery is per-directory):
+Without the Makefile (each exercise is isolated — discovery runs per-directory):
 
 ```bash
 # Run all exercises:
@@ -73,6 +80,9 @@ Start with the `guides/` directory. Each file is a heavily commented, runnable P
 | 10 | `10_paths_and_matching.py`          | `pathlib`, `match`/`case`, exhaustiveness via `assert_never` |
 | 11 | `11_context_and_decorators.py`      | Context managers, `@contextmanager`, decorators, `functools.wraps` |
 | 12 | `12_async_and_testing.py`           | asyncio, `TaskGroup`, `asyncio.timeout`, `AsyncMock` |
+| 13 | `13_imports_packages_and_execution.py` | Import caching, packages, `sys.path`, `python -m`, circular imports |
+| 14 | `14_threading_and_shared_state.py`  | Threads, locks, races, queues, shared-state ownership |
+| 15 | `15_test_reliability_and_performance.py` | Flaky-test diagnosis, input control, profiling, complexity evidence |
 
 Run any guide to see its demonstrations:
 
@@ -82,13 +92,21 @@ python guides/01_functions_and_scope.py
 
 ### 2. Work Through the Exercises
 
-The `exercises/` directory contains debug and integration exercises in progressive difficulty. Each exercise has:
+The `exercises/` directory contains debug and integration exercises in
+progressive difficulty. Most exercises have:
 
-- **`README.md`** — Context, instructions, and hints
+- **`README.md`** — Context, contract, and a spoiler-free principle primer
+- **`HINTS.md`** — Progressive hints, ending with specific repair guidance
 - **`<module>.py`** — A buggy implementation (this is what you fix)
 - **`test_<module>.py`** — Correct unit tests (do not modify these)
 
-Your goal: **read the tests, understand the intended behavior, find and fix the bugs, then run the tests until they all pass.**
+Some later exercises deliberately reverse the roles: you write or repair the
+tests while the implementation stays fixed. Always follow the exercise's own
+README about which files may be changed.
+
+For a standard debugging exercise, your goal is to **read the tests, understand
+the intended behavior, find and fix the bugs, then run the tests until they all
+pass.**
 
 ```bash
 cd exercises/01_basic_functions
@@ -97,7 +115,14 @@ python -m unittest test_shopping_cart
 
 ### 3. Check Solutions
 
-After attempting an exercise, check `solutions/` for a walkthrough of the diagnosis process. Solutions are written as explanations, not corrected code — the goal is to practice the reasoning, not copy an answer.
+After attempting an exercise, check `solutions/` for a diagnosis walkthrough
+and relevant fix snippets. They are not drop-in replacement files; the goal is
+to practice the reasoning, not copy an answer.
+
+Exercise READMEs deliberately avoid identifying planted bugs or showing
+replacement code. If you get stuck, open that exercise's `HINTS.md` and reveal
+only as much as you need. Complete answers belong only in the canonical
+`solutions/NN_solution.md` files.
 
 ## Exercise Map
 
@@ -199,10 +224,34 @@ After attempting an exercise, check `solutions/` for a walkthrough of the diagno
 
 | # | Exercise | Topic Areas | Goal |
 |---|----------|-------------|------|
-| 35 | Debugging with pdb | `breakpoint()`, stepping, post-mortem, aliasing bugs | Fix 3 bugs by stepping through the code, not reading it |
+| 35 | Debugging with pdb | `breakpoint()`, stepping, post-mortem, state inspection | Fix 3 bugs by stepping through the code, not reading it |
 
 ### Performance
 
 | # | Exercise | Topic Areas | Goal |
 |---|----------|-------------|------|
 | 36 | Performance Tuning | Accidental O(n²), sets vs lists, accumulators, cProfile/timeit | Bring 3 correct-but-quadratic functions inside their time budgets |
+
+### Packages and Imports
+
+| # | Exercise | Topic Areas | Goal |
+|---|----------|-------------|------|
+| 37 | Package Imports | Package layout, relative imports, `python -m`, circular dependencies | Fix 3 import bugs and make the package behave consistently from any working directory |
+
+### Advanced Async
+
+| # | Exercise | Topic Areas | Goal |
+|---|----------|-------------|------|
+| 38 | Async Cancellation | `CancelledError`, cleanup, `TaskGroup`, `ExceptionGroup` | Fix 3 async lifecycle bugs without leaking or orphaning work |
+
+### Python Data Model
+
+| # | Exercise | Topic Areas | Goal |
+|---|----------|-------------|------|
+| 39 | Equality and Hashing | `__eq__`, `__hash__`, `NotImplemented`, frozen keys | Restore 3 value-object contracts used by sets and dictionaries |
+
+### Reliability
+
+| # | Exercise | Topic Areas | Goal |
+|---|----------|-------------|------|
+| 40 | Retry Idempotency | Logical operation identity, ambiguous outcomes, result caching | Fix 3 bugs that can duplicate or conflate retried operations |

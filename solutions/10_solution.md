@@ -1,4 +1,4 @@
-# Solution: Exercise 10 -- Race Condition and Timing Bugs
+# Solution: Exercise 10 — Cache Expiry and Timing
 
 ## Bugs Found
 
