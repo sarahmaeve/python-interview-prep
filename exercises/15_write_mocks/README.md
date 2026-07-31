@@ -30,12 +30,12 @@ python3 -m unittest test_payment_processor
 - Asserting mock call counts and arguments with `assert_called_with`,
   `assert_not_called`, and `call_count`
 
-## Hints
+## Principle Primer
 
-- When patching, remember to patch where the name is **looked up**, not where
-  it is **defined**. For example, `payment_processor.urlopen` — not
-  `urllib.request.urlopen`.
-- To mock a chain like `urlopen(url).read().decode()`, you need to set up
-  `mock_urlopen.return_value.read.return_value.decode.return_value`.
-- `side_effect` can be a list (values returned one-per-call) or an exception
-  class/instance (raised on every call).
+A mock replaces a collaborator's observable contract. Configure only the calls
+the unit under test makes, and assert the important interaction afterward.
+Patch the name resolved by the code under test, since importing a dependency
+binds a local reference. Use `spec` to make accidental attributes fail loudly;
+use `side_effect` to model failures or a sequence of outcomes.
+
+If you get stuck, use [HINTS.md](HINTS.md).

@@ -163,7 +163,7 @@ def test_sends_correct_payload(self, mock_urlopen):
     args, kwargs = mock_urlopen.call_args
     self.assertEqual(args[0], "https://notifications.example.com/send")
     import json
-    payload = json.loads(args[1])
+    payload = json.loads(kwargs["data"])
     self.assertEqual(payload["customer_id"], "cust-1")
     self.assertEqual(payload["message"], "Hello")
 ```

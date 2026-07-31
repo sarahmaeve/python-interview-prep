@@ -21,14 +21,11 @@ tests will only pass once you have added correct type hints.
 
 4. **Bonus:** run `mypy task_registry.py` to verify your hints are consistent.
 
-## Hints
+## Principle Primer
 
-- You will need imports from the `typing` module. At minimum, consider
-  `Optional`. On Python 3.9+ you can use built-in `list` and `dict` in
-  annotations; on older versions you would need `List` and `Dict` from
-  `typing`.
-- `Optional[X]` is equivalent to `X | None` (Python 3.10+ union syntax).
-  Either form is accepted by the tests.
-- Remember to annotate `self` is **not** required — Python infers it.
-- Every parameter (other than `self`) and every return type should be
-  annotated.
+Annotations record the values callers may provide and the values each function
+returns. Prefer the narrowest honest type and represent optionality explicitly:
+`X | None` means the absence of a value is part of the contract. Container
+annotations describe both the container and its element types.
+
+If you get stuck, use [HINTS.md](HINTS.md).

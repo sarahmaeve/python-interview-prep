@@ -17,23 +17,11 @@ Your goal is to edit `text_formatter.py` until all tests pass. Do **not** modify
 - `truncate(text, max_length)` — shorten text to at most `max_length` characters, appending `"..."` when truncated.
 - `word_wrap(text, width)` — insert newlines so no line exceeds `width` characters, breaking at spaces.
 
-## Hints
+## Principle Primer
 
-<details>
-<summary>Hint 1 (gentle)</summary>
-Look carefully at boundary conditions: the very first character, the total length after modification, and what happens at each line break.
-</details>
+String transformations are boundary-heavy. Check empty input, the first and
+last character, and exact output-length guarantees. When adding a suffix, its
+length counts toward the limit. When joining words into lines, treat separators
+as separators rather than storing them as part of a word.
 
-<details>
-<summary>Hint 2 (moderate)</summary>
-One function forgets about index 0. Another produces output longer than requested. The third leaves unwanted whitespace.
-</details>
-
-<details>
-<summary>Hint 3 (specific)</summary>
-
-1. `title_case`: The loop capitalizes letters that follow a space, but never capitalizes the first character of the string.
-2. `truncate`: When the text is too long, it appends `"..."` *after* taking `max_length` characters, so the result is `max_length + 3` characters. It should slice to `max_length - 3` before appending.
-3. `word_wrap`: When starting a new line, the code prepends a space to the next word, leaving a leading space on every wrapped line.
-
-</details>
+If you get stuck, use [HINTS.md](HINTS.md).

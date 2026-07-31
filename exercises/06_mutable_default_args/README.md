@@ -24,3 +24,13 @@ understand the expected behavior, then fix `event_logger.py`.
 4. Re-run until all 12 tests pass.
 
 There are exactly **3 bugs** to find.
+
+## Principle Primer
+
+Default argument expressions are evaluated when a function is defined, not on
+every call. A mutable default can therefore become shared state. Aliasing
+creates a related risk: returning an internal mutable list lets a caller alter
+the object's private state. Query methods should also avoid rearranging the
+objects they inspect unless mutation is explicitly part of their contract.
+
+If you get stuck, use [HINTS.md](HINTS.md).

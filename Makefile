@@ -45,11 +45,14 @@ lint:  ## ruff check
 format:  ## ruff format
 	@$(PY) -m ruff format .
 
-typecheck:  ## mypy — guides + the add-type-hints exercise
+typecheck:  ## mypy — guides + type-clean typing/data-model exercises
 	@# Debug exercises (incl. 17) are excluded: their CORRECT tests are typed
 	@# against the FIXED implementation, so the committed buggy state can
 	@# never typecheck — that mismatch is the exercise.
-	@$(PY) -m mypy guides exercises/14_add_type_hints
+	@$(PY) -m mypy guides exercises/14_add_type_hints \
+		exercises/38_async_cancellation \
+		exercises/39_equality_and_hashing \
+		exercises/40_retry_idempotency
 
 check: lint typecheck test-guides  ## What CI runs (guides only — exercises expect bugs)
 

@@ -60,6 +60,9 @@ def demo_coroutine_objects() -> None:
     coro = greet("ada")
     print(f"  greet('ada') returned: {coro!r}")
     print("  (note: it's a coroutine — the body has not run yet)")
+    # We are intentionally discarding this demonstration object. Close it so
+    # the runnable guide does not leak an unawaited coroutine warning.
+    coro.close()
 
     # asyncio.run drives the coroutine to completion and returns the value.
     result = asyncio.run(greet("ada"))

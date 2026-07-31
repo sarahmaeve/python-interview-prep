@@ -19,23 +19,12 @@ Your goal is to edit `csv_report.py` until all tests pass. Do **not** modify the
 - `calculate_totals(sales_data)` -- groups by product and returns a dict mapping product name to total revenue (sum of quantity * price for each row).
 - `generate_report(filepath, output_path)` -- reads sales data, calculates totals, and writes a summary report. Should propagate errors from the read step.
 
-## Hints
+## Principle Primer
 
-<details>
-<summary>Hint 1 (gentle)</summary>
-How does the code manage the file it opens? What happens if an exception occurs before cleanup?
-</details>
+Resource lifetime should be structural: a `with` block closes a file on both
+success and failure. Aggregation needs an invariant such as “the stored total
+equals all rows processed so far,” which distinguishes accumulation from
+replacement. Catch an I/O error only when this layer can recover; otherwise,
+preserve it for the caller rather than producing a misleading partial result.
 
-<details>
-<summary>Hint 2 (moderate)</summary>
-When a product appears multiple times, does the running total actually accumulate?
-</details>
-
-<details>
-<summary>Hint 3 (specific)</summary>
-
-1. `read_sales_data` uses `open()` without a `with` statement and never calls `.close()`, leaking the file handle.
-2. `calculate_totals` uses `setdefault` to initialize `0` but then assigns (`=`) instead of accumulating (`+=`), so only the last row per product counts.
-3. `generate_report` catches `FileNotFoundError` from the read step but still proceeds to write an empty report file. It should let the error propagate.
-
-</details>
+If you get stuck, use [HINTS.md](HINTS.md).

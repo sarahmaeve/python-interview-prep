@@ -104,7 +104,7 @@ class TestTypeAnnotations(unittest.TestCase):
     # -- Task class ----------------------------------------------------------
 
     def test_task_init_annotations(self):
-        """Task.__init__ should annotate all parameters with correct types."""
+        """Task.__init__ should annotate all parameters and return None."""
         hints = typing.get_type_hints(Task.__init__)
 
         self.assertIn("task_id", hints, "Task.__init__ is missing annotation for 'task_id'")
@@ -131,6 +131,10 @@ class TestTypeAnnotations(unittest.TestCase):
             "Task.__init__ tags should be Optional[list[str]] (or list[str] | None)",
         )
 
+        self.assertIn("return", hints, "Task.__init__ is missing a return type annotation")
+        self.assertIs(hints["return"], type(None),
+                      "Task.__init__ should return None")
+
     def test_task_complete_return(self):
         """Task.complete should have a return type annotation of None."""
         hints = typing.get_type_hints(Task.complete)
@@ -151,6 +155,17 @@ class TestTypeAnnotations(unittest.TestCase):
                       "Task.add_tag should return None")
 
     # -- TaskRegistry class --------------------------------------------------
+
+    def test_registry_init_return(self):
+        """TaskRegistry.__init__ should have a return type annotation of None."""
+        hints = typing.get_type_hints(TaskRegistry.__init__)
+        self.assertIn(
+            "return",
+            hints,
+            "TaskRegistry.__init__ is missing a return type annotation",
+        )
+        self.assertIs(hints["return"], type(None),
+                      "TaskRegistry.__init__ should return None")
 
     def test_registry_register_annotations(self):
         """TaskRegistry.register should annotate task: Task and return None."""

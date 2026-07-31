@@ -13,7 +13,7 @@ Two Python features that turn repetitive boilerplate into reusable pieces:
     Decorators        — functions that wrap other functions to add behaviour.
                         Must preserve the wrapped function's identity with
                         functools.wraps, or you break introspection, logging,
-                        mocking, and docstrings.
+                        signature discovery, and docstrings.
 
 Both show up in interview questions as "write a context manager for X" and
 "what's wrong with this decorator?".  The bugs in exercises 28 and 31
@@ -300,11 +300,14 @@ def demo_decorator_basics() -> None:
 #
 # Without functools.wraps, the wrapper REPLACES the original function's
 # metadata.  Consequences:
-#   - logger.exception shows "in wrapper" instead of the real function name
+#   - logs that use func.__name__ identify every decorated callable as "wrapper"
 #   - Sphinx/pdoc documentation is empty (docstring gone)
-#   - unittest.mock.patch("module.func") can fail if introspection relied
-#     on __wrapped__ or signature
-#   - Stack traces are harder to read
+#   - inspect.signature sees (*args, **kwargs), not the wrapped signature
+#   - tools cannot follow __wrapped__ back to the original callable
+#
+# Note that @wraps does not change the wrapper's code object: traceback frames
+# can still be named "wrapper".  It also is not required for patch("module.fn"),
+# which replaces the name stored on the module.
 #
 # It's a one-line fix and costs nothing.  ALWAYS use @functools.wraps(func)
 # on the inner wrapper function.
@@ -342,8 +345,8 @@ def demo_why_wraps_matters() -> None:
     print(f"  good.__name__ = {good.__name__!r}")
     print(f"  good.__doc__  = {good.__doc__!r}")
 
-    # Key diagnostic for any "mock not patching what I think it is":
-    # check the __wrapped__ attribute (only present when wraps was used).
+    # Key diagnostic for decorator metadata and signature problems: check the
+    # __wrapped__ attribute (only present when wraps/update_wrapper was used).
     assert hasattr(good, "__wrapped__")
     assert not hasattr(bad, "__wrapped__")
     print(f"  good.__wrapped__ exists   : {hasattr(good, '__wrapped__')}")

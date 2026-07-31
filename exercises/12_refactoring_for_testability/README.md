@@ -29,29 +29,12 @@ Your goal is to edit `notification_service.py` until all tests pass. Do **not** 
 - `format_message(self, template, data)` -- formats a template string using a data dict (e.g., `"Hello {username}"` with `{"username": "Alice"}` produces `"Hello Alice"`).
 - `send_batch(self, recipients, message)` -- sends `message` to every recipient via email, returning `{"sent": [...], "failed": [...]}`. Must attempt **all** recipients even if some fail.
 
-## Hints
+## Principle Primer
 
-<details>
-<summary>Hint 1 (gentle)</summary>
-Does send_email actually use the client you passed into the constructor?
-</details>
+Dependency injection is a contract, not merely a constructor signature:
+behavior must consistently use the supplied collaborators. This makes time,
+networking, and failure paths controllable in tests. Batch operations should
+also define failure isolation explicitly—one failed recipient need not prevent
+independent recipients from being attempted.
 
-<details>
-<summary>Hint 2 (moderate)</summary>
-The clock dependency is accepted but is it used where time checks happen?
-</details>
-
-<details>
-<summary>Hint 3 (moderate)</summary>
-Compare the template placeholder names with the data dictionary keys very carefully.
-</details>
-
-<details>
-<summary>Hint 4 (specific)</summary>
-
-1. `send_email` creates a new `SmtpClient()` instead of using `self.email_client`.
-2. `should_send` calls `datetime.datetime.now()` instead of `self.clock()`.
-3. `format_message` uses `{user_name}` in the format call but the data dict key is `"username"` (no underscore). The `KeyError` is silently caught and a generic fallback is returned.
-4. `send_batch` has a `break` after catching an exception, stopping at the first failure instead of continuing to the remaining recipients.
-
-</details>
+If you get stuck, use [HINTS.md](HINTS.md).

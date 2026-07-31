@@ -4,9 +4,9 @@
 # learners about CI, and this file is meant to be a readable example.
 #
 # What it does:
-#   1. Runs the full exercise test suite on each supported Python version.
+#   1. Runs every self-verifying guide on each supported Python version.
 #   2. Lints with ruff.
-#   3. Type-checks guides and the type-hint exercises with mypy.
+#   3. Type-checks guides and the add-type-hints exercise with mypy.
 
 name: tests
 
@@ -27,7 +27,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.11", "3.12", "3.13"]
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
     steps:
       - uses: actions/checkout@v4
 
@@ -35,12 +35,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-          cache: pip
-
-      - name: Install dev deps
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install pytest mypy ruff
 
       - name: Run every guide file
         # Each guide is self-verifying (prints + asserts its own demos).

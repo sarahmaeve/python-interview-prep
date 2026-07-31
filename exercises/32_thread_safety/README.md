@@ -15,7 +15,10 @@ Your goal: edit `ticket_office.py` until all tests pass — **reliably**. Run th
 
 ## A 60-second threading primer
 
-- The **GIL** ensures only one thread executes Python bytecode at a time. It does **not** make multi-step operations atomic: the interpreter can switch threads *between* your "read", your "decide", and your "write".
+- In a standard GIL-enabled CPython build, the **GIL** allows only one thread
+  to execute Python bytecode at a time. Free-threaded CPython builds can disable
+  it. Neither model makes a multi-step application operation atomic: other
+  threads can observe state between your “read,” “decide,” and “write.”
 - Any **read-modify-write** of shared state (`x = x + 1`, "check stock, then decrement") can interleave with another thread doing the same thing. Both read the old value; one update is lost.
 - A `threading.Lock` makes a block exclusive. The idiom is:
 
@@ -27,30 +30,10 @@ Your goal: edit `ticket_office.py` until all tests pass — **reliably**. Run th
   `with` guarantees the lock is released even if the block raises — the same guarantee context managers give file handles (guide 11).
 - The tests shrink `sys.setswitchinterval` so the interpreter switches threads very frequently. That makes interleavings that might take a week of production traffic to bite show up on every test run.
 
-## Bugs: 3
+There are 3 bugs. If you get stuck, use [HINTS.md](HINTS.md).
 
-<details>
-<summary>Hint 1 (gentle)</summary>
-
-The class creates `self._lock` in `__init__`. Which methods touch shared state without ever using it? And in the one method that *does* use it, trace what happens on every possible exit path.
-</details>
-
-<details>
-<summary>Hint 2 (moderate)</summary>
-
-1. `sell()` reads `self._available`, makes a decision, does some pricing work, and then writes back — with no lock held. Two threads can both pass the check for the same last ticket.
-2. `restock()` calls `acquire()` and `release()` manually. What happens to the lock if the `ValueError` fires between them? Every later caller of a lock-using method will block forever.
-3. `channel_report()` iterates `self._sales_by_channel` while seller threads may be inserting new keys. Iterating a dict while another thread resizes it raises `RuntimeError`.
-</details>
-
-<details>
-<summary>Hint 3 (specific)</summary>
-
-1. **`sell()`**: wrap the whole body — read, check, and all writes — in `with self._lock:`. (Computing the price inside the lock is fine here; if pricing were expensive you'd compute first, then re-check inside the lock.)
-2. **`restock()`**: replace the manual `acquire()`/`release()` pair with `with self._lock:`. The `with` form releases on the exception path too.
-3. **`channel_report()`**: take the lock and return a copy — `with self._lock: return dict(self._sales_by_channel)`. Never hand out a live reference to state another thread mutates.
-
-</details>
+For the evolving CPython execution model, see the
+[official free-threading guide](https://docs.python.org/3/howto/free-threading-python.html).
 
 ## Discussion Questions
 

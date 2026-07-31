@@ -16,8 +16,12 @@ python3 -m unittest test_config_parser
 
 All tests are correct. Fix the bugs in `config_parser.py` until every test passes.
 
-## Bugs to Find
+## Principle Primer
 
-1. An overly broad `except` clause that swallows exceptions it should not catch.
-2. An exception that is re-raised with the wrong type and a missing message.
-3. An exception that is silently suppressed instead of being allowed to propagate.
+Catch only exceptions you can meaningfully handle. A broad handler can convert
+programming errors into silent data loss. When translating an exception,
+preserve the public exception type and a useful message, and consider exception
+chaining when the original cause helps diagnosis. If a layer cannot recover,
+letting the exception propagate is usually the honest contract.
+
+If you get stuck, use [HINTS.md](HINTS.md).

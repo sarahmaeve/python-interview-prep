@@ -6,7 +6,7 @@ Run:
 The first test is translated for you as an example.  Each remaining test
 is a deliberately-failing stub with a TODO comment describing what to use —
 the suite starts red and goes green as you translate.  When you're done,
-`pytest` should collect at least 14 tests and all of them should pass.
+`pytest` should collect 15 tests and all of them should pass.
 
 Translation cheat sheet (see guides/03_unittest_fundamentals.py Section 9):
 
@@ -52,7 +52,7 @@ def test_default_thresholds():
 
 
 # TODO: define a `monitor` fixture that yields a fresh
-# TemperatureMonitor(low_threshold=0, high_threshold=30) for each test.
+# TemperatureMonitor(low_threshold=0, high_threshold=100) for each test.
 # The teardown (`reset`) is handled for free because each test gets a
 # fresh instance — there's no shared state to clear.
 @pytest.fixture

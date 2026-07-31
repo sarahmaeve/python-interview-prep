@@ -155,7 +155,7 @@ def demo_frozen_slots_kw_only() -> None:
 
     # kw_only: positional construction is blocked.
     try:
-        DatabaseConfig("localhost", 5432, "u", "p")  # type: ignore[misc]
+        DatabaseConfig("localhost", 5432, "u", "p")  # type: ignore[call-arg]
     except TypeError as exc:
         print(f"  positional kw_only    -> TypeError: {exc}")
     cfg = DatabaseConfig(host="localhost", port=5432, username="u", password="p")

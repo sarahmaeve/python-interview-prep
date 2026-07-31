@@ -26,7 +26,7 @@ Use this to compare against your actual times when testing the material.
 
 | # | Exercise | Format | Est. Time | Difficulty Drivers |
 |---|----------|--------|-----------|-------------------|
-| 14 | Task Registry | Add hints | 10 min | 11 method signatures; docstrings guide the work; Optional/list/dict types |
+| 14 | Task Registry | Add hints | 10 min | 12 method signatures; docstrings guide the work; Optional/list/dict types |
 
 ## Mock Exercises
 
@@ -61,7 +61,7 @@ Use this to compare against your actual times when testing the material.
 | 27 | match/case Dispatch | 3 | Fix impl | 15 min | Mapping-pattern binding; silent None fallthrough; assert_never discussion |
 | 28 | Context Manager Leaks | 3 | Fix impl | 20 min | Three cleanup-path bugs: class CM, @contextmanager, `with` usage |
 | 29 | Async Retry | 3 | Fix impl | 25 min | Forgotten `await`; retry off-by-one; `time.sleep` blocking the loop |
-| 30 | Pytest Translation | — | Write tests | 20 min | 14 tests to translate; fixtures, parametrize, pytest.raises |
+| 30 | Pytest Translation | — | Write tests | 20 min | 14 TODO cases to translate; fixtures, parametrize, pytest.raises |
 | 31 | Decorator `@wraps` | 3 | Fix impl | 15 min | Missing wraps; wraps on wrong target; class-level shared state |
 
 ## Concurrency
@@ -94,6 +94,30 @@ Use this to compare against your actual times when testing the material.
 |---|----------|------|--------|-----------|-------------------|
 | 36 | Performance Tuning | 3 | Fix impl | 20 min | Correct-but-quadratic code; behavior tests pin results while perf tests enforce budgets |
 
+## Packages and Imports
+
+| # | Exercise | Bugs | Format | Est. Time | Difficulty Drivers |
+|---|----------|------|--------|-----------|-------------------|
+| 37 | Package Imports | 3 | Fix package | 25 min | Subprocess diagnostics; execution context; circular import from a type-only dependency |
+
+## Advanced Async
+
+| # | Exercise | Bugs | Format | Est. Time | Difficulty Drivers |
+|---|----------|------|--------|-----------|-------------------|
+| 38 | Async Cancellation | 3 | Fix impl | 30 min | Cancellation as BaseException control flow; async cleanup; TaskGroup failure semantics |
+
+## Python Data Model
+
+| # | Exercise | Bugs | Format | Est. Time | Difficulty Drivers |
+|---|----------|------|--------|-----------|-------------------|
+| 39 | Equality and Hashing | 3 | Fix impl | 25 min | Cooperative comparison; equal-hash invariant; mutable-key stability |
+
+## Reliability
+
+| # | Exercise | Bugs | Format | Est. Time | Difficulty Drivers |
+|---|----------|------|--------|-----------|-------------------|
+| 40 | Retry Idempotency | 3 | Fix impl | 30 min | Ambiguous remote outcomes; stable operation keys; conflict and falsy-cache handling |
+
 ## Summary by Time
 
 | Time | Exercises |
@@ -101,8 +125,8 @@ Use this to compare against your actual times when testing the material.
 | 10 min | 01, 14, 18 |
 | 15 min | 02, 03, 04, 13, 15, 16, 17, 24, 25, 27, 31 |
 | 20 min | 05, 06, 07, 08, 19, 20, 23, 26, 28, 30, 36 |
-| 25 min | 09, 10, 11, 21, 22, 29, 32, 34, 35 |
-| 30 min | 12 |
+| 25 min | 09, 10, 11, 21, 22, 29, 32, 34, 35, 37, 39 |
+| 30 min | 12, 38, 40 |
 | 45 min | 33 |
 
 ## Notes
@@ -112,6 +136,9 @@ Use this to compare against your actual times when testing the material.
 - Exercise 20 requires exploring an opaque module first — budget extra time for introspection.
 - Exercise 22 includes discussion questions with no single right answer — practice articulating trade-offs aloud.
 - Exercise 30 requires pytest installed (`pip install pytest` or the repo's dev group).
+- Exercise 37 launches fresh Python subprocesses so import order and module caching cannot mask failures.
+- Exercise 38 requires Python 3.11+ for `TaskGroup` and `ExceptionGroup`.
+- Exercise 40 models an idempotency protocol in memory; its README explicitly covers the additional guarantees a production store needs.
 - Your actual times will likely be faster than these estimates on exercises where you're strong, and slower on exercises that cover your weak spots — that's the point. Use the gaps to identify what to study more.
 
 ## Tracking your own times
@@ -120,4 +147,4 @@ Copy `YOUR_TIMES.template.md` to `YOUR_TIMES.md` (gitignored) and fill in your a
 times alongside the estimates. Comparing over several sessions tells you where your
 weak spots are — which is the whole point of this repo.
 
-**Total estimated time for all 36 exercises: ~680 min (~11.5 hrs)**
+**Total estimated time for all 40 exercises: ~825 min (~13 hrs 45 min)**

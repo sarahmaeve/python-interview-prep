@@ -26,3 +26,12 @@ has 4 bugs**. Your job is to read the tests carefully, understand what the code
 4. Re-run until all 14 tests pass.
 
 There are exactly **4 bugs** to find.
+
+## Principle Primer
+
+Treat a trustworthy test suite as an executable specification. Read the
+assertion, identify the observable contract it describes, then find the first
+place the implementation diverges from that contract. Avoid repairing only the
+example input when the test is expressing a general validation rule.
+
+If you get stuck, use [HINTS.md](HINTS.md).

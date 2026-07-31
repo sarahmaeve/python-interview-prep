@@ -17,46 +17,15 @@ Your goal is to edit `resource_manager.py` until all tests pass. Do **not** modi
 - `transaction(db)` — `@contextmanager`-decorated generator; commits on success, rolls back on error.
 - `run_queries(pool, queries)` — helper that uses a pool to run several queries.
 
-## Hints
+## Principle Primer
 
-<details>
-<summary>Hint 1 (gentle)</summary>
+A context manager defines paired lifecycle actions across both normal and
+exceptional exits. For a class-based manager, `__exit__` receives the exception
+state and decides both cleanup and suppression. For a generator-based manager,
+an exception from the `with` body is raised at the suspended `yield`, allowing
+the manager to roll back and re-raise.
 
-Every bug is the same shape: a cleanup path that runs only on the *happy path* but gets skipped when something raises. Walk through each resource's lifecycle under two scenarios (clean exit, raised exception) and note which cleanup actions run in each.
-
-</details>
-
-<details>
-<summary>Hint 2 (moderate)</summary>
-
-1. `ConnectionPool.__exit__` only closes the connection when there was no exception. Why?
-2. `transaction` calls `commit()` unconditionally — but what about the rollback path?
-3. `run_queries` doesn't use `with pool`.
-
-</details>
-
-<details>
-<summary>Hint 3 (specific)</summary>
-
-1. In `ConnectionPool.__exit__`, drop the `if exc_type is None:` guard — the connection must close on every exit. Keep `return False` so the exception still propagates.
-2. In `transaction`, wrap `yield` in try/except/else:
-    ```python
-    db.begin()
-    try:
-        yield db
-    except Exception:
-        db.rollback()
-        raise
-    else:
-        db.commit()
-    ```
-3. In `run_queries`, use the pool as a context manager:
-    ```python
-    with pool as conn:
-        return [conn.execute(q) for q in queries]
-    ```
-
-</details>
+If you get stuck, use [HINTS.md](HINTS.md).
 
 ## Why this matters
 
@@ -65,7 +34,8 @@ In production:
 - A DB transaction never committed or rolled back holds row locks and leaks backend memory.
 - A connection leased but never returned exhausts the pool and subsequent requests hang waiting for a free slot.
 
-Each of the fixes is a one- or two-line change. The discipline of "wrap yield in try/finally" and "always use `with`" is habit-forming, which is the whole point of this exercise.
+The habit to build is tracing both lifecycle paths—success and failure—before
+calling resource management complete.
 
 ## Relevant reading
 

@@ -1,4 +1,4 @@
-# Exercise 10: Race Conditions and Timing
+# Exercise 10: Cache Expiry and Timing
 
 A key-value cache where each entry has a time-to-live (TTL). The implementation has **3 bugs** related to time-dependent behavior for you to find and fix.
 
@@ -21,23 +21,12 @@ Your goal is to edit `cache_with_expiry.py` until all tests pass. Do **not** mod
 - `cleanup(self)` -- removes all expired entries from the cache.
 - `size(self)` -- returns the number of non-expired entries currently in the cache.
 
-## Hints
+## Principle Primer
 
-<details>
-<summary>Hint 1 (gentle)</summary>
-Think about boundary conditions. What happens at the exact moment an entry expires?
-</details>
+Time-based behavior needs an explicit boundary contract: decide whether the
+exact deadline is still valid, then apply that rule consistently. Stored state
+and observable state may differ when expired entries remain physically present.
+When removing dictionary entries, iterate over a stable snapshot rather than a
+live view that changes beneath the loop.
 
-<details>
-<summary>Hint 2 (moderate)</summary>
-One method modifies a dictionary while iterating over it. Another method takes a shortcut that gives a wrong answer.
-</details>
-
-<details>
-<summary>Hint 3 (specific)</summary>
-
-1. `get` uses `>=` when checking expiry, so an item fetched at exactly its expiry time is wrongly considered expired. It should use `>`.
-2. `cleanup` iterates over `self._cache.keys()` and deletes entries during iteration, which raises a `RuntimeError` in Python 3. Use `list(self._cache.keys())`.
-3. `size` returns `len(self._cache)`, which counts expired-but-not-yet-cleaned entries. It should count only entries whose expiry is in the future.
-
-</details>
+If you get stuck, use [HINTS.md](HINTS.md).

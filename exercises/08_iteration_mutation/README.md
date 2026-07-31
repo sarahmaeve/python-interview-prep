@@ -16,8 +16,12 @@ python3 -m unittest test_task_manager
 
 All tests are correct. Fix the bugs in `task_manager.py` until every test passes.
 
-## Bugs to Find
+## Principle Primer
 
-1. Mutating a list while iterating over it.
-2. Comparing date strings lexicographically instead of by actual date value.
-3. Consuming a generator twice when it can only be iterated once.
+Iteration assumes the underlying sequence remains structurally stable; removing
+items from a list while advancing through it can skip elements. Compare values
+using representations whose ordering matches their meaning—display-formatted
+dates often do not. Finally, remember that iterators and generators are
+one-shot streams: after consumption, they do not rewind themselves.
+
+If you get stuck, use [HINTS.md](HINTS.md).

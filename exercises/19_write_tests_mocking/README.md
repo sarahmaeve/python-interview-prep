@@ -27,12 +27,12 @@ exercise.
 python -m unittest test_order_service
 ```
 
-## Hints
+## Principle Primer
 
-- The `OrderService` uses dependency injection for `PaymentClient` and
-  `InventoryClient`. You can pass `MagicMock()` instances directly to the
-  constructor -- no `@patch` needed for those.
-- `notify_customer` calls `urllib.request.urlopen` -- you **will** need
-  `@patch` for that.
-- Think about what each test needs to verify: return values, side effects,
-  **and** that the right methods were called with the right arguments.
+Prefer dependency injection when the implementation already provides a seam;
+reserve patching for dependencies resolved internally. A complete interaction
+test usually checks both the returned value and the important collaborator
+calls. Failure tests should establish which downstream interactions must not
+occur after an earlier step fails.
+
+If you get stuck, use [HINTS.md](HINTS.md).
