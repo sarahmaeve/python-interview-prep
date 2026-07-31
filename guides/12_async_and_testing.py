@@ -3,7 +3,7 @@ Guide 12 — Asyncio and AsyncMock
 =================================
 Run:  python guides/12_async_and_testing.py
 
-Asynchronous Python is everywhere in 2025 production code: async web
+Asynchronous Python is common in production code: async web
 frameworks (FastAPI, Starlette), async DB drivers (asyncpg, aiosqlite),
 async HTTP (httpx, aiohttp).  Interview panels ask about it because it's
 where the subtle bugs live.
@@ -13,6 +13,7 @@ This guide covers:
   - await, asyncio.run, and the event loop
   - asyncio.gather and asyncio.TaskGroup (3.11+)
   - asyncio.timeout (3.11+) — the modern way to bound an await
+  - cancellation propagation, resource cleanup, and task ownership
   - AsyncMock — mocking async code so tests don't need a live event loop
   - unittest.IsolatedAsyncioTestCase — running async tests in unittest
 
@@ -21,9 +22,22 @@ TABLE OF CONTENTS
   2. await and asyncio.run                    (line ~90)
   3. Concurrency: gather and TaskGroup (3.11) (line ~140)
   4. asyncio.timeout (3.11+)                  (line ~215)
-  5. Common bugs in async code                (line ~270)
-  6. AsyncMock                                (line ~340)
-  7. Testing async code with unittest          (line ~410)
+  5. Cancellation and cleanup                 (line ~250)
+  6. Common bugs in async code                (line ~330)
+  7. AsyncMock                                (line ~390)
+  8. Testing async code with unittest         (line ~440)
+
+OFFICIAL DOCUMENTATION
+  Coroutines and tasks:
+    https://docs.python.org/3/library/asyncio-task.html
+  Task cancellation:
+    https://docs.python.org/3/library/asyncio-task.html#task-cancellation
+  TaskGroup:
+    https://docs.python.org/3/library/asyncio-task.html#task-groups
+  Asynchronous context managers:
+    https://docs.python.org/3/reference/datamodel.html#asynchronous-context-managers
+  IsolatedAsyncioTestCase:
+    https://docs.python.org/3/library/unittest.html#unittest.IsolatedAsyncioTestCase
 """
 
 from __future__ import annotations
@@ -115,12 +129,13 @@ def demo_await_and_run() -> None:
 #
 # gather(*coros) runs them concurrently and returns a list of results in
 # the original order.  If any coroutine raises and return_exceptions is
-# False (the default), gather re-raises — but the other tasks keep running
-# and their exceptions are swallowed.  This surprises people.
+# False (the default), gather propagates the first exception to its awaiter,
+# while the other awaitables keep running.  That failed await does not return
+# their eventual outcomes, so explicit task ownership still matters.
 #
-# TaskGroup (new in 3.11) is the *preferred* modern form.  It's
-# structured concurrency: the `async with` block waits for every task to
-# finish, and any exception cancels siblings and propagates out cleanly.
+# TaskGroup (new in 3.11) provides stronger safety guarantees.  It's structured
+# concurrency: the `async with` block waits for every task to finish, and a
+# child failure cancels siblings before the failures propagate.
 # If multiple tasks raise, you get an ExceptionGroup with all of them.
 
 
@@ -221,13 +236,76 @@ def demo_timeout() -> None:
 
 
 # ============================================================================
-# 5. COMMON BUGS IN ASYNC CODE
+# 5. CANCELLATION AND CLEANUP
+# ============================================================================
+#
+# Task.cancel() requests cancellation.  At the next cancellation point (most
+# often an await), asyncio injects CancelledError into the task.  Cancellation
+# is control flow from the owner of the task, not an ordinary business error.
+#
+# CancelledError inherits directly from BaseException.  Code should normally
+# put cleanup in `finally` and let cancellation propagate.  Catching
+# BaseException and returning a fallback can accidentally turn "stop now" into
+# apparent success.
+
+
+class DemoResource:
+    def __init__(self) -> None:
+        self.closed = False
+
+    async def close(self) -> None:
+        await asyncio.sleep(0)
+        self.closed = True
+
+
+async def work_until_cancelled(resource: DemoResource, started: asyncio.Event) -> None:
+    try:
+        started.set()
+        await asyncio.sleep(60)
+    finally:
+        # This runs on success, failure, and cancellation.  Because close is
+        # asynchronous, the finally block may itself await it.
+        await resource.close()
+
+
+async def cancel_owned_task() -> tuple[bool, bool]:
+    resource = DemoResource()
+    started = asyncio.Event()
+    task = asyncio.create_task(work_until_cancelled(resource, started))
+    await started.wait()
+
+    task.cancel()
+    cancellation_reached_owner = False
+    try:
+        await task
+    except asyncio.CancelledError:
+        cancellation_reached_owner = True
+
+    return cancellation_reached_owner, resource.closed
+
+
+def demo_cancellation() -> None:
+    print("=" * 60)
+    print("5. Cancellation and cleanup")
+    print("=" * 60)
+
+    propagated, closed = asyncio.run(cancel_owned_task())
+    assert propagated and closed
+    print(f"  cancellation reached task owner: {propagated}")
+    print(f"  resource closed in finally:      {closed}")
+    print("  TaskGroup owns sibling cancellation and waiting automatically.")
+    print("  Manually created tasks require that same ownership on every exit path.")
+    print()
+
+
+# ============================================================================
+# 6. COMMON BUGS IN ASYNC CODE
 # ============================================================================
 
 
 def demo_common_bugs() -> None:
     print("=" * 60)
-    print("5. Common bugs in async code")
+    print("6. Common bugs in async code")
     print("=" * 60)
 
     # --- Bug A: forgetting to await ---
@@ -255,18 +333,18 @@ def demo_common_bugs() -> None:
     print("  WRONG in async code:  time.sleep(1)     — blocks the event loop")
     print("  RIGHT in async code:  await asyncio.sleep(1) — yields to others")
 
-    # --- Bug C: asyncio.gather's silent task errors ---
-    # gather(..., return_exceptions=False) — the default — cancels the
-    # current task on exception but lets siblings keep running; only the
-    # first exception propagates.  Use return_exceptions=True to see all
-    # outcomes, or (better) use asyncio.TaskGroup.
+    # --- Bug C: treating gather as structured ownership ---
+    # gather(..., return_exceptions=False) — the default — propagates the
+    # first exception to the awaiter but lets siblings keep running.  Use
+    # return_exceptions=True when results-as-values are genuinely intended,
+    # or TaskGroup when sibling lifetimes belong to one operation.
     print("  gather(a, b, c): if b raises, a and c still run; only b's exc")
     print("    propagates.  TaskGroup's ExceptionGroup is the modern answer.")
     print()
 
 
 # ============================================================================
-# 6. AsyncMock
+# 7. AsyncMock
 # ============================================================================
 #
 # In Guide 05 we used MagicMock for sync code.  For async code, use
@@ -285,7 +363,7 @@ async def process_order(order_id: str, payment_client: AsyncMock,
 
 def demo_asyncmock() -> None:
     print("=" * 60)
-    print("6. AsyncMock")
+    print("7. AsyncMock")
     print("=" * 60)
 
     # Configure the mocks.
@@ -315,7 +393,7 @@ def demo_asyncmock() -> None:
 
 
 # ============================================================================
-# 7. TESTING ASYNC CODE WITH unittest
+# 8. TESTING ASYNC CODE WITH unittest
 # ============================================================================
 #
 # Python 3.8+ ships unittest.IsolatedAsyncioTestCase.  Override async def
@@ -351,7 +429,7 @@ class TestAsyncOrderProcessing(unittest.IsolatedAsyncioTestCase):
 
 def demo_async_unittest() -> None:
     print("=" * 60)
-    print("7. Testing async code with unittest")
+    print("8. Testing async code with unittest")
     print("=" * 60)
 
     loader = unittest.TestLoader()
@@ -375,6 +453,7 @@ def main() -> None:
     demo_await_and_run()
     demo_concurrency()
     demo_timeout()
+    demo_cancellation()
     demo_common_bugs()
     demo_asyncmock()
     demo_async_unittest()
@@ -387,14 +466,17 @@ def main() -> None:
     print("     coroutine.  Never call it and ignore the return.")
     print("  2. Use asyncio.TaskGroup (3.11+) for structured concurrency.")
     print("     It cancels siblings cleanly and raises ExceptionGroup so")
-    print("     you can see every failure with `except*`.")
+    print("     failures that occur can be handled together with `except*`.")
     print("  3. asyncio.timeout(s) (3.11+) is the modern way to bound an await.")
-    print("  4. NEVER call time.sleep() in async code — it blocks the loop.")
-    print("  5. AsyncMock + IsolatedAsyncioTestCase are the stdlib tools for")
+    print("  4. Put cleanup in finally and normally let cancellation propagate.")
+    print("  5. Every task needs an owner that awaits it on every exit path.")
+    print("  6. NEVER call time.sleep() in async code — it blocks the loop.")
+    print("  7. AsyncMock + IsolatedAsyncioTestCase are the stdlib tools for")
     print("     testing async logic without a live event loop.")
     print()
     print("  Next up:")
-    print("    Exercise 29 — Async Retry Client  (retry, timeout, cancellation)")
+    print("    Exercise 29 — Async Retry Client  (retry and timeout)")
+    print("    Exercise 38 — Async Cancellation  (cleanup and task ownership)")
     print()
 
 

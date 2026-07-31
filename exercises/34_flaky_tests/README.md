@@ -39,6 +39,10 @@ remains uncontrolled.
 
 There are 4 flaky tests. If you get stuck, use [HINTS.md](HINTS.md).
 
+For broader techniques for classifying variable failures and controlling
+hidden inputs, see
+[Guide 15](../../guides/15_test_reliability_and_performance.py).
+
 ## Discussion Questions
 
 Come back to these after the suite is green.

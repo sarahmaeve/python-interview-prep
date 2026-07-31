@@ -64,6 +64,9 @@ Type annotations can create such a runtime dependency even when the annotated
 class is not otherwise needed at runtime. Part of the diagnosis is deciding
 which dependencies the running program genuinely needs.
 
+For runnable demonstrations using temporary packages and fresh interpreters,
+see [Guide 13](../../guides/13_imports_packages_and_execution.py).
+
 ## Bugs: 3
 
 If you get stuck, open [HINTS.md](HINTS.md). It progresses from diagnostic

@@ -54,6 +54,9 @@ Python therefore makes ordinary mutable dataclasses unhashable by default.
 fields participating in equality are logically immutable. For value keys,
 `frozen=True` often expresses the intended contract more honestly.
 
+For another runnable value-object example, see
+[Guide 02](../../guides/02_classes_and_oop.py), section 4b.
+
 If you get stuck, use [HINTS.md](HINTS.md).
 
 ## Official Python documentation

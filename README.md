@@ -80,6 +80,9 @@ Start with the `guides/` directory. Each file is a heavily commented, runnable P
 | 10 | `10_paths_and_matching.py`          | `pathlib`, `match`/`case`, exhaustiveness via `assert_never` |
 | 11 | `11_context_and_decorators.py`      | Context managers, `@contextmanager`, decorators, `functools.wraps` |
 | 12 | `12_async_and_testing.py`           | asyncio, `TaskGroup`, `asyncio.timeout`, `AsyncMock` |
+| 13 | `13_imports_packages_and_execution.py` | Import caching, packages, `sys.path`, `python -m`, circular imports |
+| 14 | `14_threading_and_shared_state.py`  | Threads, locks, races, queues, shared-state ownership |
+| 15 | `15_test_reliability_and_performance.py` | Flaky-test diagnosis, input control, profiling, complexity evidence |
 
 Run any guide to see its demonstrations:
 

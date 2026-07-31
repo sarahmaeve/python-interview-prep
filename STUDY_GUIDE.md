@@ -132,12 +132,12 @@ Work through everything in order. The exercises are numbered by difficulty withi
 | 29 | Guide 12 (full) + Guide 05 (§10b AsyncMock) |
 | 30 | Guide 03 (§9 pytest translation cheat sheet) |
 | 31 | Guide 11 (§5–8 decorators) |
-| 32 | Guide 11 (§1–4 — why `with` guarantees release) + the exercise README's threading primer |
+| 32 | Guide 14 (threading and shared state) + Guide 11 (§1–4 — why `with` guarantees release) |
 | 33 | None — it synthesizes patterns from earlier exercises; attempt it after the core sets (01–25) |
-| 34 | Guide 04 (§8 "it works sometimes" checklist) + Guide 05 (§6 mocking the clock) |
+| 34 | Guide 15 (§1–4 test reliability) + Guide 04 (§8 "it works sometimes" checklist) |
 | 35 | Guide 04 (workflow + breakpoint() tip) + the exercise README's pdb crash course |
-| 36 | None — the exercise README covers cProfile/timeit and the cost model |
-| 37 | Guide 04 (traceback reading) + the exercise README's import model |
-| 38 | Guide 12 (TaskGroup/cancellation) + the exercise README's lifecycle model |
-| 39 | Guide 02 (§9 dataclass) + the exercise README's data-model primer |
-| 40 | Guide 08 (retries/systems) + the exercise README's idempotency model |
+| 36 | Guide 15 (§5–7 profiling, growth, and performance tests) |
+| 37 | Guide 13 (imports, packages, and module execution) + Guide 04 (traceback reading) |
+| 38 | Guide 12 (§3–5 TaskGroup, timeout, cancellation, and cleanup) |
+| 39 | Guide 02 (§4b equality/hash contracts and §9 dataclass) |
+| 40 | Guide 08 (§7–8 retries, operation identity, and idempotency) |

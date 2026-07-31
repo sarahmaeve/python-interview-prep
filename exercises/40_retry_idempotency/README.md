@@ -59,6 +59,10 @@ transaction, and multiple processes need shared durable storage. Retention,
 recovery after crashes, payload canonicalization, and authorization of key
 reuse also need explicit designs.
 
+For a runnable example distinguishing retry attempts from logical operation
+identity, see [Guide 08](../../guides/08_observability_and_systems.py),
+section 8.
+
 If you get stuck, use [HINTS.md](HINTS.md).
 
 ## Official references

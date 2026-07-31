@@ -3,7 +3,7 @@ Guide 09 — Modern Data Types: dataclass, StrEnum, Decimal
 ==========================================================
 Run:  python guides/09_modern_data_types.py
 
-Three idioms that every 2025-era Python codebase reaches for constantly:
+Three idioms used widely in modern Python codebases:
 
     @dataclass   — the standard way to write classes that hold data
     StrEnum      — typed sets of string constants (3.11+)

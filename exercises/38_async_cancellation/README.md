@@ -51,6 +51,9 @@ By contrast, manually created tasks need explicit ownership on every exit
 path. Merely awaiting them one by one does not automatically cancel the rest
 when an earlier await raises.
 
+For runnable cancellation, cleanup, and task-ownership examples, see
+[Guide 12](../../guides/12_async_and_testing.py), especially sections 3–5.
+
 If you get stuck, use [HINTS.md](HINTS.md).
 
 ## Official Python documentation

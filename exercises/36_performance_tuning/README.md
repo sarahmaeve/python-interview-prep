@@ -41,6 +41,10 @@ A useful habit: time the function at n and at 2n. Linear code roughly doubles; q
 There are 3 performance bugs. If you get stuck, use
 [HINTS.md](HINTS.md).
 
+For runnable examples using `cProfile`, `timeit`, input doubling, and
+operation counts, see
+[Guide 15](../../guides/15_test_reliability_and_performance.py).
+
 ## Discussion Questions
 
 Come back to these after the performance tests are green.

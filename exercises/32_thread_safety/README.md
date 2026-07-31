@@ -35,6 +35,10 @@ There are 3 bugs. If you get stuck, use [HINTS.md](HINTS.md).
 For the evolving CPython execution model, see the
 [official free-threading guide](https://docs.python.org/3/howto/free-threading-python.html).
 
+For a runnable treatment of locks, queues, ownership, and deterministic
+concurrency tests, see
+[Guide 14](../../guides/14_threading_and_shared_state.py).
+
 ## Discussion Questions
 
 After fixing the bugs, practice articulating these — they're standard interview territory:
